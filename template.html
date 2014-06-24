@@ -48,12 +48,11 @@
     <div id="slider-audio" style="margin-top:5px; width:900px"></div>
     <div id="slider-range" style="margin-top:5px; width:900px"></div>
     <div id="soundClips" class="btn-group"><!-- Start of Photo DIV (column) -->
-	
-        <button class="btn btn-inverse" value='Yes' id="play"><i class="icon icon-white icon-play"></i> </button>
-            <!-- If the user clicks this button, the saved answer will be value="no"-->
-            <button class="btn btn-inverse" value='No' id="stop"><i class="icon icon-white icon-stop"></i> </button>
 
-
+        <button class="btn" value='Yes' id="play"><span id="play-button" class="glyphicon glyphicon-play"></span> </button>
+    
+        <button class="btn btn-inverse" value='No' id="stop"><span id="stop-button" class="glyphicon glyphicon-backward"></span> </button>
+    
     </div>
     <span id="timer"></span>/<span id="totalTime"></span>
     <br/>
@@ -276,6 +275,7 @@ pybossa.presentTask(function(task, deferred) {
         $("#totalTime").text(buzz.toTimer( task.info.duration ));
         $('#play').on('click', function(){
             task.mySound.togglePlay();
+            $('#play-button').toggleClass('glyphicon-play glyphicon-pause');
 	    });
 
         $('#stop').on('click', function(){
