@@ -48,6 +48,7 @@
     <div id="slider-audio" style="margin-top:5px; width:900px"></div>
     <div id="slider-range" style="margin-top:5px; width:900px"></div>
     <div id="soundClips" class="btn-group"><!-- Start of Photo DIV (column) -->
+	
         <button class="btn btn-inverse" value='Yes' id="play"><i class="icon icon-white icon-play"></i> </button>
             <!-- If the user clicks this button, the saved answer will be value="no"-->
             <button class="btn btn-inverse" value='No' id="stop"><i class="icon icon-white icon-stop"></i> </button>
@@ -64,15 +65,16 @@
         <form class="form-inline">
 
         <input type="text" name="inputTag" id="inputTag">
-        <button class="btn btn-inverse btn-answer disabled" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add tag</button>
+        <button class="btn btn-inverse btn-answer" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add tag</button>
 
         </form> 
 
         <!-- Feedback items for the user -->
-        <p>You are working now on task: <span id="task-id" class="label label-warning">#</span></p>
-        <p>You have completed: <span id="done" class="label label-info"></span> tasks from
+		 <p>The current task ID is: <span id="task-id" class="label label-warning">#</span></p>
+        <p>You have completed: <span id="done" class="label label-info"></span> out of
         <!-- Progress bar for the user -->
-        <span id="total" class="label label-inverse"></span></p>
+        <span id="total" class="label label-warning"></span> tasks</p>
+
         <div class="progress progress-striped">
             <div id="progress" rel="tooltip" title="#" class="bar" style="width: 0%;"></div>
         </div>
@@ -122,7 +124,7 @@ function fromSecondsToPixels(seconds, duration){
 }
 
 function loadUserProgress() {
-    pybossa.userProgress('sonyc').done(function(data){
+    pybossa.userProgress('sonycv1').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
         $("#progress").css("width", pct.toString() +"%");
         $("#progress").attr("title", pct.toString() + "% completed!");
@@ -165,10 +167,11 @@ pybossa.taskLoaded(function(task, deferred) {
 pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
-        //$("#addTag").hide();
+		$('#task-id').html(task.id);
+        $("#addTag").show();
 
         $("#spectrals").append(task.info.slider);
-
+/* disabled autocomplete list for now
          var availableTags = [
             "engine idling",
             "car horn",
@@ -185,18 +188,18 @@ pybossa.presentTask(function(task, deferred) {
         $( "#inputTag" ).autocomplete({
         source: availableTags
         });
-
+*/
         $('form').submit(function(e){
             //$(this).children('input[type=submit]').attr('disabled', 'disabled');
             // this is just for demonstration
             e.preventDefault(); 
         });
-
+/*
         $( "#inputTag" ).on( "autocompleteclose", function( event, ui ) {
                 $("#addTag").removeClass("disabled");
 
                 } );
-
+*/
          $( "#slider-audio" ).slider({
                 range: false,
                 min: 0,
@@ -267,7 +270,7 @@ pybossa.presentTask(function(task, deferred) {
                     $("#slider-range-" + task.id).remove();
                     $("#inputTag").hide();
                     $("#inputTag").val("");
-                    $("#inputTag").addClass("disabled");
+                    //$("#inputTag").addClass("disabled");
                     task.mySound.unbind("timeupdate");
                     task.mySound.stop();
                     //task.mySound = null;
@@ -297,5 +300,5 @@ pybossa.presentTask(function(task, deferred) {
     }
 });
 
-pybossa.run('sonyc');
+pybossa.run('sonycv1');
 </script>
