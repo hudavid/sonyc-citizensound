@@ -54,10 +54,14 @@
             <button class="btn btn-inverse" value='No' id="stop"><i class="icon icon-white icon-stop"></i> </button>
 
 
-    </div><!-- End of Photo DIV (columnt) -->
+    </div>
     <span id="timer"></span>/<span id="totalTime"></span>
     <br/>
-    <strong>Start Time: </strong><span id="startTime"></span>
+
+    </div><!-- End of Question and Submission DIV (column) -->
+	<div class="form-row">
+	<div class="span6">
+	    <strong>Start Time: </strong><span id="startTime"></span>
     <strong>End Time: </strong><span id="endTime"></span>
     <span id="startTimeSeconds" style="display:none"></span>
     <span id="endTimeSeconds" style="display:none"></span>
@@ -78,20 +82,43 @@
         <div class="progress progress-striped">
             <div id="progress" rel="tooltip" title="#" class="bar" style="width: 0%;"></div>
         </div>
+	</div>
+	<div class="span6">
+        <table id="tags-table" class="table table-striped table-bordered">
+            <tbody>
+            <tr>
+                <th>Remove</td>
+                <th>Description</td>
+                <th>Start</td>
+                <th>End</td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <!--button not finished yet -->
+        <button class="btn btn-inverse btn-answer pull-right" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
+        <button class="btn btn-inverse btn-answer" id="demo" type="button"><i class="icon icon-white icon-plus"></i>Test Button</button>
+        <p>Don't click these buttons on the right!(WIP)</p>
+	</div>
+	</div>
         <!-- 
             This application uses Disqus to allow users to provide some feedback.
             The next section includes a button that when a user clicks on it will
             load the comments, if any, for the given task
-        -->
+			
         <div id="disqus_show_btn" style="margin-top:5px;">
             <button class="btn btn-primary btn-large btn-disqus" onclick="loadDisqus()"><i class="icon-comments"></i> Show comments</button>
             <button class="btn btn-large btn-disqus" onclick="loadDisqus()" style="display:none"><i class="icon-comments"></i> Hide comments</button>
-        </div><!-- End of Disqus Button section -->
+        </div>
+		-->
+		<!-- End of Disqus Button section -->
         <!-- Disqus thread for the given task -->
+		<!--
         <div id="disqus_thread" style="margin-top:5px;display:none"></div>
-    </div><!-- End of Question and Submission DIV (column) -->
+		-->
 </div><!-- End of Skeleton Row -->
 
+<!-- entire chunk is for comments
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
 
@@ -111,8 +138,9 @@
     }
 
 </script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+-->
 <script>
 
 function fromPixelsToSeconds(pixel, duration){ 
@@ -169,8 +197,9 @@ pybossa.presentTask(function(task, deferred) {
         loadUserProgress();
 		$('#task-id').html(task.id);
         $("#addTag").show();
-
+		$("#inputTag").show();
         $("#spectrals").append(task.info.slider);
+		
 /* disabled autocomplete list for now
          var availableTags = [
             "engine idling",
@@ -206,7 +235,7 @@ pybossa.presentTask(function(task, deferred) {
                 max:900,
                 slide: function( event, ui ) {
                     var seconds = ((ui.value * task.info.duration) / 900);
-                    task.mySound.setTime(seconds);
+                    task.mySound.setTime(0);
                 }
         });
 
@@ -216,11 +245,11 @@ pybossa.presentTask(function(task, deferred) {
                 max:900,
                 values: [ 0, 900 ],
                 slide: function( event, ui ) {
-                    $("#inputTag").show();
+                    //$("#inputTag").show();
                     $("#addTag").show();
-                    $( "#startTime" ).text( buzz.toTimer(fromPixelsToSeconds(ui.values[ 0 ], task.info.duration) ));
+                    $( "#startTime" ).text( buzz.toTimer(fromPixelsToSeconds(ui.values[ 0 ], task.info.duration), true ));
                     $( "#startTimeSeconds" ).text( (fromPixelsToSeconds(ui.values[ 0 ], task.info.duration) ));
-                    $( "#endTime" ).text(buzz.toTimer(fromPixelsToSeconds(ui.values[ 1 ], task.info.duration) ) );
+                    $( "#endTime" ).text(buzz.toTimer(fromPixelsToSeconds(ui.values[ 1 ], task.info.duration), true ) );
                     $( "#endTimeSeconds" ).text((fromPixelsToSeconds(ui.values[ 1 ], task.info.duration) ) );
                 }
         });
@@ -236,12 +265,14 @@ pybossa.presentTask(function(task, deferred) {
 
 
         $("#slider-range-" + task.id).show();
-
+		task.mySound = null;
         task.mySound = new buzz.sound(task.info.clip_url, {
                 autoplay: true,
-                }
-                );
+		    }
+        );
 
+		task.mySound.load();
+		
         $("#totalTime").text(buzz.toTimer( task.info.duration ));
         $('#play').on('click', function(){
             task.mySound.togglePlay();
@@ -259,6 +290,17 @@ pybossa.presentTask(function(task, deferred) {
             $("#timer").text(timer);
         });
 
+        /* TODO - Not working
+        $('#demo').off('click').on('click', function(){
+            var table = document.getElementById("tags-table");
+            var row = table.insertRow(-1);
+            for (i = 0; i < 4; i++) {
+                row.insertCell(i);
+                table.rows[i].cells[-1].innerHTML = "hi";
+            }
+        }
+        */
+        
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
             if ((typeof answer != 'undefined') && (answer == 'addTag')) {
@@ -282,15 +324,18 @@ pybossa.presentTask(function(task, deferred) {
 
                 });
                 $("#loading").fadeIn(500);
+				/*
                 if ($("#disqus_thread").is(":visible")) {
                     $('#disqus_thread').toggle();
                     $('.btn-disqus').toggle();
                 }
+				*/
             }
             else {
                 $("#error").show();
             }
         });
+		
         $("#loading").hide();
     }
     else {
