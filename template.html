@@ -73,7 +73,7 @@
         </form> 
 
         <!-- Feedback items for the user -->
-		 <p>The current task ID is: <span id="task-id" class="label label-warning">#</span></p>
+		 <p>The current task ID is: <span id="task-id" class="label label-info">#</span></p>
         <p>You have completed: <span id="done" class="label label-info"></span> out of
         <!-- Progress bar for the user -->
         <span id="total" class="label label-warning"></span> tasks</p>
@@ -150,6 +150,37 @@ function fromSecondsToPixels(seconds, duration){
     return Math.round((secons * 900)/ duration);
 }
 
+//time is handled in milliseconds
+function setCookie(cname,cvalue,expireTime) {
+    var date = new Date();
+    date.setTime(Date.now() + (expireTime*1000));
+    var expires = "expires=" + date.toGMTString();
+    document.cookie = cname+"="+cvalue+"; "+expires;    
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var cArray = document.cookie.split(';');
+    for(var i = 0; i < cArray.length; i++) {
+        var current = cArray[i].trim();
+        if (current.indexOf(name) == 0) return current.substring(name.length, current.length);
+    }
+    return "";
+}
+
+function checkCookie() {
+    var user=getCookie("username");
+    if (user) {
+        alert("Cookie in use, name is " + user + ", will be deleted in 15 seconds or less");
+    }
+    else {
+       user = prompt("What is your name?","");
+       if (user) {
+           setCookie("username", user, 15);
+       }
+    }
+}
+
 function loadUserProgress() {
     pybossa.userProgress('sonycv1').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
@@ -189,11 +220,10 @@ pybossa.taskLoaded(function(task, deferred) {
     }
 });
 
-
-
 pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
+        checkCookie();
 		$('#task-id').html(task.id);
         $("#addTag").show();
 		$("#inputTag").show();
@@ -304,9 +334,11 @@ pybossa.presentTask(function(task, deferred) {
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
             if ((typeof answer != 'undefined') && (answer == 'addTag')) {
+            //add in "name" field to test cookie storage
                 var tag =  {tag: $("#inputTag").val(),
                             cue:{'start': parseFloat($("#startTimeSeconds").text()),
                                  'end': parseFloat($("#endTimeSeconds").text())},
+                            name: getCookie("username")
                             };
                 pybossa.saveTask(task.id, tag).done(function() {
                     $("#slider-range-" + task.id).remove();
@@ -335,7 +367,7 @@ pybossa.presentTask(function(task, deferred) {
                 $("#error").show();
             }
         });
-		
+
         $("#loading").hide();
     }
     else {
