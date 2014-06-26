@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<script src="http://jaysalvat.github.io/buzz/releases/latest/buzz.min.js"></script>
 <script src="http://code.jquery.com/ui/1.8.24/jquery-ui.min.js"></script>
 
 <div class="row">
@@ -41,29 +40,19 @@
         <h1 id="question">Label this sound clip</h1> <!-- The question will be loaded here -->
     </div>
 </div>
-<div class="row skeleton"> <!-- Start Skeleton Row-->
+<div> <!-- Start Skeleton Row-->
     <div class="span12"><!-- Start of Question and Submission DIV (column) -->
-        <div id="spectrals"><!-- Start of Photo DIV (column) -->
-        </div><!-- End of Photo DIV (columnt) -->
-    <div id="slider-audio" style="margin-top:5px; width:900px"></div>
-    <div id="slider-range" style="margin-top:5px; width:900px"></div>
-    <div id="soundClips" class="btn-group"><!-- Start of Photo DIV (column) -->
-
-        <button class="btn" value='Yes' id="play"><span id="play-button" class="glyphicon glyphicon-play"></span> </button>
-    
-        <button class="btn btn-inverse" value='No' id="stop"><span id="stop-button" class="glyphicon glyphicon-backward"></span> </button>
-    
+        <div id="spectrals">
+        </div>
+    <div>
+        <audio id="soundclip" display="block" style="width:100%; height: 20px" autoplay controls preload="auto">
+        <p>Your browser doesn't support audio elements</p>
+        </audio>
     </div>
-    <span id="timer"></span>/<span id="totalTime"></span>
-    <br/>
-
     </div><!-- End of Question and Submission DIV (column) -->
+
 	<div class="form-row">
 	<div class="span6">
-	    <strong>Start Time: </strong><span id="startTime"></span>
-    <strong>End Time: </strong><span id="endTime"></span>
-    <span id="startTimeSeconds" style="display:none"></span>
-    <span id="endTimeSeconds" style="display:none"></span>
 
         <form class="form-inline">
 
@@ -79,7 +68,7 @@
         <span id="total" class="label label-warning"></span> tasks</p>
 
         <div class="progress progress-striped">
-            <div id="progress" rel="tooltip" title="#" class="bar" style="width: 0%;"></div>
+            <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
         </div>
 	</div>
 	<div class="span6">
@@ -88,8 +77,6 @@
             <tr>
                 <th>Remove</td>
                 <th>Description</td>
-                <th>Start</td>
-                <th>End</td>
             </tr>
             </tbody>
         </table>
@@ -98,6 +85,8 @@
         <button class="btn btn-inverse btn-answer pull-right" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
         <button class="btn btn-inverse btn-answer" id="demo" type="button"><i class="icon icon-white icon-plus"></i>Test Button</button>
         <p>Don't click these buttons on the right!(WIP)</p>
+
+</audio>
 	</div>
 	</div>
         <!-- 
@@ -150,12 +139,21 @@ function fromSecondsToPixels(seconds, duration){
     return Math.round((secons * 900)/ duration);
 }
 
+//GUID generator code adapted from http://guid.us/
+function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+ 
+function GUID() {
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+}
+
 //time is handled in milliseconds
 function setCookie(cname,cvalue,expireTime) {
     var date = new Date();
     date.setTime(Date.now() + (expireTime*1000));
     var expires = "expires=" + date.toGMTString();
-    document.cookie = cname+"="+cvalue+"; "+expires;    
+    document.cookie = cname+"="+cvalue+"; "+expires;
 }
 
 function getCookie(cname) {
@@ -169,15 +167,12 @@ function getCookie(cname) {
 }
 
 function checkCookie() {
-    var user=getCookie("username");
-    if (user) {
-        alert("Cookie in use, name is " + user + ", will be deleted in 15 seconds or less");
-    }
-    else {
-       user = prompt("What is your name?","");
-       if (user) {
-           setCookie("username", user, 15);
-       }
+    var uniqueID = getCookie("uid");
+    if (!uniqueID) {
+       alert("Hello new contributor! Cookie is now set to last 20 seconds");
+       //cookie lasts 20 seconds for now, change time to something realistic later
+       uniqueID = GUID();
+       setCookie("uid", uniqueID, 20);
     }
 }
 
@@ -199,20 +194,13 @@ pybossa.taskLoaded(function(task, deferred) {
     //deferred.resolve(task);
     img.attr("src", task.info.spec_url);
     img.attr("id", "spectral_" + task.id);
-    img.css("display", "none");
+    img.attr("width", "100%");
+    //img.css("display", "none");
     img.load(function() {
             deferred.resolve(task);
     });
     task.info.img = img;
-
-    var slider = $("<div/>");
-    slider.attr("id", "slider-range-" + task.id);
-    slider.css("margin-top", "5px");
-    slider.css("width", "900px");
-    slider.css("height", "200px");
-    slider.css("background", "url(" + task.info.spec_url +")");
-    slider.css("display", "none");
-    task.info.slider = slider;
+    
     //task.answer = [];
 }
     else {
@@ -227,9 +215,11 @@ pybossa.presentTask(function(task, deferred) {
 		$('#task-id').html(task.id);
         $("#addTag").show();
 		$("#inputTag").show();
-        $("#spectrals").append(task.info.slider);
-		
-/* disabled autocomplete list for now
+        $("#spectrals").html(task.info.img);
+		$("#soundclip").attr("src", task.info.clip_url);
+        $("#soundclip").load();
+        
+        //re-enabled autocomplete again
          var availableTags = [
             "engine idling",
             "car horn",
@@ -243,82 +233,22 @@ pybossa.presentTask(function(task, deferred) {
             "street music",
             "air conditioner",
         ];
+        
         $( "#inputTag" ).autocomplete({
         source: availableTags
         });
-*/
+
         $('form').submit(function(e){
             //$(this).children('input[type=submit]').attr('disabled', 'disabled');
             // this is just for demonstration
             e.preventDefault(); 
         });
-/*
+
         $( "#inputTag" ).on( "autocompleteclose", function( event, ui ) {
                 $("#addTag").removeClass("disabled");
 
                 } );
-*/
-         $( "#slider-audio" ).slider({
-                range: false,
-                min: 0,
-                max:900,
-                slide: function( event, ui ) {
-                    var seconds = ((ui.value * task.info.duration) / 900);
-                    task.mySound.setTime(0);
-                }
-        });
 
-         $( "#slider-range-" + task.id).slider({
-                range: true,
-                min: 0,
-                max:900,
-                values: [ 0, 900 ],
-                slide: function( event, ui ) {
-                    //$("#inputTag").show();
-                    $("#addTag").show();
-                    $( "#startTime" ).text( buzz.toTimer(fromPixelsToSeconds(ui.values[ 0 ], task.info.duration), true ));
-                    $( "#startTimeSeconds" ).text( (fromPixelsToSeconds(ui.values[ 0 ], task.info.duration) ));
-                    $( "#endTime" ).text(buzz.toTimer(fromPixelsToSeconds(ui.values[ 1 ], task.info.duration), true ) );
-                    $( "#endTimeSeconds" ).text((fromPixelsToSeconds(ui.values[ 1 ], task.info.duration) ) );
-                }
-        });
-
-        $(".ui-slider-range").css("opacity", "0.5");
-        $(".ui-slider-range").css("cursor", "col-resize");
-        $("#slider-range-" + task.id + " .ui-slider-handle").css("height", "100%");
-        $("#slider-range-" + task.id + " .ui-slider-handle").css("width", "1px");
-        $("#slider-range-" + task.id + " .ui-slider-handle").css("top", "0");
-        $("#slider-range-" + task.id + " .ui-slider-handle").css("margin-left", "0");
-        //$(".ui-slider-range ui-widget-header").css("opacity", "0.5");
-        $(".ui-slider-range").css("background", "rgba(255,255,255,0.7)");
-
-
-        $("#slider-range-" + task.id).show();
-		task.mySound = null;
-        task.mySound = new buzz.sound(task.info.clip_url, {
-                autoplay: true,
-		    }
-        );
-
-		task.mySound.load();
-		
-        $("#totalTime").text(buzz.toTimer( task.info.duration ));
-        $('#play').on('click', function(){
-            task.mySound.togglePlay();
-            $('#play-button').toggleClass('glyphicon-play glyphicon-pause');
-	    });
-
-        $('#stop').on('click', function(){
-            task.mySound.stop();
-	    });
-
-        task.mySound.bind("timeupdate", function(e) {
-            var timer = buzz.toTimer(this.getTime());
-
-            var position = Math.round((this.getTime() * 900)/ task.info.duration);
-            $( "#slider-audio" ).slider( "option", "value", position );
-            $("#timer").text(timer);
-        });
 
         /* TODO - Not working
         $('#demo').off('click').on('click', function(){
@@ -336,21 +266,19 @@ pybossa.presentTask(function(task, deferred) {
             if ((typeof answer != 'undefined') && (answer == 'addTag')) {
             //add in "name" field to test cookie storage
                 var tag =  {tag: $("#inputTag").val(),
+                            uid: getCookie("uid")
+                            /*
                             cue:{'start': parseFloat($("#startTimeSeconds").text()),
                                  'end': parseFloat($("#endTimeSeconds").text())},
-                            name: getCookie("username")
+                            */
                             };
                 pybossa.saveTask(task.id, tag).done(function() {
-                    $("#slider-range-" + task.id).remove();
+                    
+                    //$("#soundclip").pause();
                     $("#inputTag").hide();
                     $("#inputTag").val("");
                     //$("#inputTag").addClass("disabled");
-                    task.mySound.unbind("timeupdate");
-                    task.mySound.stop();
                     //task.mySound = null;
-                    console.log(buzz.sounds);
-                    buzz.sounds = [];
-                    console.log(buzz.sounds);
                     $("#addTag").hide();
                     deferred.resolve();
 
@@ -367,7 +295,7 @@ pybossa.presentTask(function(task, deferred) {
                 $("#error").show();
             }
         });
-
+        
         $("#loading").hide();
     }
     else {
