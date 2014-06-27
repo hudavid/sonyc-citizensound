@@ -60,17 +60,29 @@
     </div>
     </div><!-- End of Question and Submission DIV (column) -->
 
-	<div class="form-row">
 	<div class="span6">
+    
+        <!-- Feedback items for the user -->
+        <form class="form">
+        <select id="choices">
+            <option value="car">car</option>
+            <option value="subway">subway</option>
+            <option value="people talking">people talking</option>
+            <option value="musicians">musicians</option>
+            <option value="siren">siren</option>
+            <option value="gunshots">gunshots</option>
+            <option value="construction">construction</option>
+            <option value="air conditioner">air conditioner</option>
+            <option value="dogs">dogs</option>
+            <option value="birds">birds</option>
+            <option value="custom tag">custom tag</option>
+        </select>
 
-        <form class="form-inline">
-
-        <input type="text" name="inputTag" id="inputTag">
-        <button class="btn btn-inverse btn-answer" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add tag</button>
+        <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag" style="display:none">
+        <button class="btn btn-inverse" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add Tag</button>
 
         </form> 
-
-        <!-- Feedback items for the user -->
+        <p>None of the above? Add a custom tag!</p>
 		 <p>The current task ID is: <span id="task-id" class="label label-info">#</span></p>
         <p>You have completed: <span id="done" class="label label-info"></span> out of
         <!-- Progress bar for the user -->
@@ -81,17 +93,12 @@
         </div>
 	</div>
 	<div class="span6">
-        <table id="tags-table" class="table table-striped table-bordered">
-            <tbody>
-            <tr>
-                <th>Remove</td>
-                <th>Description</td>
-            </tr>
-            </tbody>
-        </table>
+        <strong>List of Tags</strong>
+        <div id="selected-tags">
+        </div>
         
         <!--button not finished yet -->
-        <button class="btn btn-inverse btn-answer pull-right" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
+        <button class="btn btn-inverse btn-answer pull-right btn-answer" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
         <button class="btn btn-inverse btn-answer" id="demo" type="button"><i class="icon icon-white icon-plus"></i>Test Button</button>
         <p>Don't click these buttons on the right!(WIP)</p>
 
@@ -234,13 +241,12 @@ pybossa.presentTask(function(task, deferred) {
         loadUserProgress();
         checkCookie();
 		$('#task-id').html(task.id);
-        $("#addTag").show();
-		$("#inputTag").show();
+        //$("#addTag").show();
+		//$("#inputTag").show();
         $("#spectrals").html(task.info.img);
 		$("#soundclip").attr("src", task.info.clip_url);
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
-        console.log(task.info.duration);
         
         var soundclip = document.getElementById("soundclip");
         var playslider = document.getElementById("playslider");
@@ -275,6 +281,15 @@ pybossa.presentTask(function(task, deferred) {
             soundclip.currentTime = 0;
         });
         
+        $("#choices").change(function() {
+            if ($(this).val() === "custom tag") {
+                $("#custom-input").show();
+            }
+            else {
+                $("#custom-input").hide();
+            }
+        });
+        
         //re-enabled autocomplete again
          var availableTags = [
             "engine idling",
@@ -290,17 +305,31 @@ pybossa.presentTask(function(task, deferred) {
             "air conditioner",
         ];
         
-        $( "#inputTag" ).autocomplete({
+        $( "#custom-input" ).autocomplete({
         source: availableTags
         });
 
+        $("#addTag").on("click", function(evt) {
+        console.log("clicked");
+            var selectedtag = $("#choices").val();
+            var newtag;
+            if (selectedtag === "custom tag") {
+                newtag = $("#custom-input").val();
+            }
+            else {
+                newtag = selectedtag;
+            }
+            var elementToAdd = "<div>"+newtag+"</div>";
+            $("#selected-tags").append(elementToAdd);
+        });
+        
         $('form').submit(function(e){
             //$(this).children('input[type=submit]').attr('disabled', 'disabled');
             // this is just for demonstration
             e.preventDefault(); 
         });
 
-        $( "#inputTag" ).on( "autocompleteclose", function( event, ui ) {
+        $( "#custom-input" ).on( "autocompleteclose", function( event, ui ) {
                 $("#addTag").removeClass("disabled");
 
                 } );
