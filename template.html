@@ -52,7 +52,7 @@
         </div>
         <button class="btn" id="play"><span id="play-button" class="glyphicon glyphicon-play"></span> </button>
     
-        <button class="btn btn-inverse" id="stop"><span id="stop-button" class="glyphicon glyphicon-backward"></span> </button>
+        <button class="btn" id="stop"><span id="stop-button" class="glyphicon glyphicon-backward"></span> </button>
         <span id="slider-current">00:00:00 / 00:00:00
         </span>
         <div id="debug">
@@ -178,10 +178,10 @@ function getCookie(cname) {
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
-       alert("Hello new contributor! Cookie is now set to last 20 seconds");
-       //cookie lasts 20 seconds for now, change time to something realistic later
+       alert("Hello new contributor! Cookie is now set to last 5 minutes");
+       //cookie lasts for 5 minutes for now, change time to something realistic later
        uniqueID = GUID();
-       setCookie("uid", uniqueID, 20);
+       setCookie("uid", uniqueID, 300);
     }
 }
 
@@ -198,22 +198,6 @@ function secondsToTime(input) {
     return minutes+":"+seconds;
 }
 
-function playToggle() {
-    var soundclip = document.getElementById("soundclip");
-    if (soundclip.paused) {
-        soundclip.play();
-    }
-    else {
-        soundclip.pause();
-    }
-    $("#play-button").toggleClass('glyphicon-play glyphicon-pause');
-}
-
-function rewind() {
-    var soundclip = document.getElementById("soundclip");
-    soundclip.currentTime = 0;
-}
-
 function loadUserProgress() {
     pybossa.userProgress('sonycv1').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
@@ -225,14 +209,6 @@ function loadUserProgress() {
     });
 }
 
-function updateSound() {
-    var sliderCurrent = document.getElementById("slider-current");
-    var soundclip = document.getElementById("soundclip");
-    sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(soundclip.duration);
-    //playslider = document.getElementById("playslider");
-    $("#playslider").slider("option", "value", soundclip.currentTime);
-}
-
 pybossa.taskLoaded(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
     var img = $("<img/>");
@@ -241,7 +217,6 @@ pybossa.taskLoaded(function(task, deferred) {
     img.attr("src", task.info.spec_url);
     img.attr("id", "spectral_" + task.id);
     img.attr("width", "100%");
-    //img.css("display", "none");
     img.load(function() {
             deferred.resolve(task);
     });
@@ -263,8 +238,7 @@ pybossa.presentTask(function(task, deferred) {
 		$("#inputTag").show();
         $("#spectrals").html(task.info.img);
 		$("#soundclip").attr("src", task.info.clip_url);
-        //$("#soundclip").attr("ontimeupdate", "document.getElementById('slider-current').innerHTML = secondsToTime(this.currentTime) + ' / ' + secondsToTime(this.duration);");
-        $("#soundclip").attr("ontimeupdate", "updateSound()");
+        //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
         console.log(task.info.duration);
         
@@ -281,7 +255,7 @@ pybossa.presentTask(function(task, deferred) {
             }
         });
         
-        $("soundclip").on("timeupdate", function(e) {
+        $("#soundclip").on("timeupdate", function(e) {
             $(playslider).slider("option", "value", soundclip.currentTime);
             var sliderCurrent = document.getElementById("slider-current");
             sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(soundclip.duration);
@@ -300,24 +274,6 @@ pybossa.presentTask(function(task, deferred) {
         $("#stop").on("click", function() {
             soundclip.currentTime = 0;
         });
-        
-        /*
-        $("#playslider").on("slidestart", function(event, ui) {
-            soundclip.pause();
-            soundclip.currentTime=$("#playslider").slider("value");
-        });
-        
-        $("#playslider").on("slidestop", function(event, ui) {
-            soundclip.play();
-        });
-        
-        $("#playslider").on("slide", function(event, ui) {
-            var debug = document.getElementById("debug");
-            soundclip.currentTime=$("#playslider").slider("value");
-            debug.innerHTML = $("#playslider").slider("value");
-        });
-        */
-        
         
         //re-enabled autocomplete again
          var availableTags = [
@@ -348,37 +304,19 @@ pybossa.presentTask(function(task, deferred) {
                 $("#addTag").removeClass("disabled");
 
                 } );
-
-
-        /* TODO - Not working
-        $('#demo').off('click').on('click', function(){
-            var table = document.getElementById("tags-table");
-            var row = table.insertRow(-1);
-            for (i = 0; i < 4; i++) {
-                row.insertCell(i);
-                table.rows[i].cells[-1].innerHTML = "hi";
-            }
-        }
-        */
-        
+                
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
             if ((typeof answer != 'undefined') && (answer == 'addTag')) {
             //add in "name" field to test cookie storage
                 var tag =  {tag: $("#inputTag").val(),
                             uid: getCookie("uid")
-                            /*
-                            cue:{'start': parseFloat($("#startTimeSeconds").text()),
-                                 'end': parseFloat($("#endTimeSeconds").text())},
-                            */
                             };
                 pybossa.saveTask(task.id, tag).done(function() {
                     
-                    //$("#soundclip").pause();
                     $("#inputTag").hide();
                     $("#inputTag").val("");
                     //$("#inputTag").addClass("disabled");
-                    //task.mySound = null;
                     $("#addTag").hide();
                     deferred.resolve();
 
