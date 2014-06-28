@@ -60,29 +60,67 @@
     </div>
     </div><!-- End of Question and Submission DIV (column) -->
 
-	<div class="span6">
+	<div class="span12">
     
         <!-- Feedback items for the user -->
+        <div class="span3">
+        <p class="text-center"><strong>Select Tags</strong></p>
+        </div>
+        <div class="span9">
+        <div class="btn-group btn-group-sm">
+        <button id="preset-tag" class="btn btn-default" value="car">Car</button>
+        <button id="preset-tag" class="btn btn-default" value="subway">Subway</button>
+        <button id="preset-tag" class="btn btn-default" value="airplane">Airplane</button>
+        <button id="preset-tag" class="btn btn-default" value="talking">Talking</button>
+        <button id="preset-tag" class="btn btn-default" value="musicians">Musicians</button>
+        <button id="preset-tag" class="btn btn-default" value="gunshots">Gunshots</button>
+        <button id="preset-tag" class="btn btn-default" value="construction">Construction</button>
+        <button id="preset-tag" class="btn btn-default" value="dogs">Dogs</button>
+        <button id="preset-tag" class="btn btn-default" value="birds">Birds</button>
+        <button id="preset-tag" class="btn btn-default" value="air conditioner">Air Conditioner</button>
+        </div>
+        </div>
+    </div>
+    
+    <div class="span12">
+        <div class="span3">
+        <p class="text-center"><strong>Custom Tags</strong></p>
+        </div>
+        <div class="span9">
         <form class="form">
-        <select id="choices">
-            <option value="car">car</option>
-            <option value="subway">subway</option>
-            <option value="people talking">people talking</option>
-            <option value="musicians">musicians</option>
-            <option value="siren">siren</option>
-            <option value="gunshots">gunshots</option>
-            <option value="construction">construction</option>
-            <option value="air conditioner">air conditioner</option>
-            <option value="dogs">dogs</option>
-            <option value="birds">birds</option>
-            <option value="custom tag">custom tag</option>
-        </select>
-
-        <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag" style="display:none">
+        <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag">
         <button class="btn btn-inverse" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add Tag</button>
-
         </form> 
-        <p>None of the above? Add a custom tag!</p>
+        </div>
+    </div>
+    <div class="span12">
+        <div class="span3">
+        <p class="text-center"><strong>Description</strong></p>
+        </div>
+        <div class="span9">
+            <form class="form">
+                <input type="radio" name="description" value="foreground" checked>Foreground
+                <input type="radio" name="description" value="background">Background
+                <input type="radio" name="description" value="unsure">Unsure
+            </form>
+        </div>
+    </div>
+    <div class="span12">
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-fg"span3">
+            <p class="text-center"><strong>Foreground</strong></p>
+        </div>
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-bg"span3">
+            <p class="text-center"><strong>Background</strong></p>
+        </div>
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-uk"span3">
+            <p class="text-center"><strong>Unsure</strong></p>
+        </div>
+    </div>
+    <div class="span12">
+        <button class="btn btn-inverse btn-answer pull-right btn-answer" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
+    </div>
+    <button class="btn btn-inverse btn-sm" id="toggle-info" type="button">Show/Hide Details</button>
+    <div id="extra-info" style="display:none">
 		 <p>The current task ID is: <span id="task-id" class="label label-info">#</span></p>
         <p>You have completed: <span id="done" class="label label-info"></span> out of
         <!-- Progress bar for the user -->
@@ -92,19 +130,7 @@
             <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
         </div>
 	</div>
-	<div class="span6">
-        <strong>List of Tags</strong>
-        <div id="selected-tags">
-        </div>
-        
-        <!--button not finished yet -->
-        <button class="btn btn-inverse btn-answer pull-right btn-answer" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
-        <button class="btn btn-inverse btn-answer" id="demo" type="button"><i class="icon icon-white icon-plus"></i>Test Button</button>
-        <p>Don't click these buttons on the right!(WIP)</p>
-
-</audio>
-	</div>
-	</div>
+</div>
         <!-- 
             This application uses Disqus to allow users to provide some feedback.
             The next section includes a button that when a user clicks on it will
@@ -120,7 +146,7 @@
 		<!--
         <div id="disqus_thread" style="margin-top:5px;display:none"></div>
 		-->
-</div><!-- End of Skeleton Row -->
+<!-- End of Skeleton Row -->
 
 <!-- entire chunk is for comments
 <script type="text/javascript">
@@ -185,10 +211,10 @@ function getCookie(cname) {
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
-       alert("Hello new contributor! Cookie is now set to last 5 minutes");
+       alert("Hello new contributor! Cookie is now set to last 30 minutes");
        //cookie lasts for 5 minutes for now, change time to something realistic later
        uniqueID = GUID();
-       setCookie("uid", uniqueID, 300);
+       setCookie("uid", uniqueID, 1800);
     }
 }
 
@@ -203,6 +229,29 @@ function secondsToTime(input) {
         seconds = "0"+seconds;
     }
     return minutes+":"+seconds;
+}
+
+function addNewTag(newtag) {
+            var description = $("input[name=description]:checked").val();
+            var elementToAdd = $("<button>", {
+                type: "button",
+                value: newtag,
+                text: newtag,
+                class: "btn btn-default"
+            });
+            elementToAdd.on('click', function(evt) {
+                $(this).remove();
+            });
+            switch(description) {
+                case "foreground":
+                    $("#selected-fg").append(elementToAdd);
+                    break;
+                case "background":
+                    $("#selected-bg").append(elementToAdd);
+                    break;
+                default:
+                    $("#selected-uk").append(elementToAdd);
+            }
 }
 
 function loadUserProgress() {
@@ -281,13 +330,10 @@ pybossa.presentTask(function(task, deferred) {
             soundclip.currentTime = 0;
         });
         
-        $("#choices").change(function() {
-            if ($(this).val() === "custom tag") {
-                $("#custom-input").show();
-            }
-            else {
-                $("#custom-input").hide();
-            }
+        $("[id=preset-tag]").on("click", function() {
+            console.log("hi");
+            var newtag = $(this).val();
+            addNewTag(newtag);
         });
         
         //re-enabled autocomplete again
@@ -310,19 +356,10 @@ pybossa.presentTask(function(task, deferred) {
         });
 
         $("#addTag").on("click", function(evt) {
-        console.log("clicked");
-            var selectedtag = $("#choices").val();
-            var newtag;
-            if (selectedtag === "custom tag") {
-                newtag = $("#custom-input").val();
-            }
-            else {
-                newtag = selectedtag;
-            }
-            var elementToAdd = "<div>"+newtag+"</div>";
-            $("#selected-tags").append(elementToAdd);
+            var newtag = $("#custom-input").val();
+            addNewTag(newtag);
         });
-        
+
         $('form').submit(function(e){
             //$(this).children('input[type=submit]').attr('disabled', 'disabled');
             // this is just for demonstration
@@ -333,6 +370,10 @@ pybossa.presentTask(function(task, deferred) {
                 $("#addTag").removeClass("disabled");
 
                 } );
+                
+        $("#toggle-info").on("click", function(evt) {
+            $("#extra-info").toggle();        
+        });
                 
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
