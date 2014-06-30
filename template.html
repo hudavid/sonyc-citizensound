@@ -237,7 +237,7 @@ function addNewTag(newtag) {
                 value: newtag,
                 text: newtag,
                 class: "btn btn-default selected",
-                id: "selected"
+                //id: "selected"
             });
             elementToAdd.on('click', function(evt) {
                 $(this).remove();
@@ -251,14 +251,40 @@ function addNewTag(newtag) {
             
             switch(salience) {
                 case "foreground":
+                    elementToAdd.attr('id', 'tag-fg');
                     $("#selected-fg").append(elementToAdd);
                     break;
                 case "background":
+                    elementToAdd.attr('id', 'tag-bg');
                     $("#selected-bg").append(elementToAdd);
                     break;
                 default:
+                    elementToAdd.attr('id', 'tag-un');
                     $("#selected-uk").append(elementToAdd);
             }
+}
+
+function getTags() {
+    var fg = $('[id=tag-fg]');
+    var bg = $('[id=tag-bg]');
+    var un = $('[id=tag-un]');
+    
+    var tags = {};
+    tags.foreground = new Array();
+    for (i = 0; i < fg.length; i++) {
+        tags.foreground.push(fg[i].value);
+    }
+    
+    tags.background = new Array();
+    for (i = 0; i < bg.length; i++) {
+        tags.background.push(bg[i].value);
+    }
+    
+    tags.unsure = new Array();
+    for (i = 0; i < un.length; i++) {
+        tags.unsure.push(un[i].value);
+    }
+    return tags;
 }
 
 function loadUserProgress() {
@@ -384,11 +410,11 @@ pybossa.presentTask(function(task, deferred) {
         
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
-            if ((typeof answer != 'undefined') && (answer == 'addTag')) {
+            //if ((typeof answer != 'undefined') && (answer == 'addTag')) {
+            if (true) {
             //add in "name" field to test cookie storage
-                var tag =  {tag: $("#inputTag").val(),
-                            uid: getCookie("uid")
-                            };
+                var tag = getTags();
+                tag.uid = getCookie("uid");
                 pybossa.saveTask(task.id, tag).done(function() {
                     
                     $("#inputTag").hide();
