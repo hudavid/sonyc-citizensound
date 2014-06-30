@@ -323,7 +323,7 @@ pybossa.presentTask(function(task, deferred) {
         loadUserProgress();
         checkCookie();
 		$('#task-id').html(task.id);
-        //$("#addTag").show();
+        $("#addTag").show();
 		//$("#inputTag").show();
         $("#spectrals").html(task.info.img);
 		$("#soundclip").attr("src", task.info.clip_url);
@@ -350,7 +350,7 @@ pybossa.presentTask(function(task, deferred) {
             sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(soundclip.duration);
         });
         
-        $("#play").on("click", function() {
+        $("#play").off("click").on("click", function() {
             if (soundclip.paused) {
                 soundclip.play();
             }
@@ -360,11 +360,11 @@ pybossa.presentTask(function(task, deferred) {
             $("#play-button").toggleClass('glyphicon-play glyphicon-pause');
         });
         
-        $("#stop").on("click", function() {
+        $("#stop").off("click").on("click", function() {
             soundclip.currentTime = 0;
         });
         
-        $("[id=preset-tag]").on("click", function() {
+        $("[id=preset-tag]").off("click").on("click", function() {
             var newtag = $(this).val();
             addNewTag(newtag);
         });
@@ -388,7 +388,7 @@ pybossa.presentTask(function(task, deferred) {
             source: availableTags
         });
 
-        $("#addTag").on("click", function(evt) {
+        $("#addTag").off("click").on("click", function(evt) {
             var newtag = $("#custom-input").val();
             addNewTag(newtag);
         });
