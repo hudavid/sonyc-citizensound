@@ -59,7 +59,18 @@
         </div>
     </div>
     </div><!-- End of Question and Submission DIV (column) -->
-
+    <div class="span12">
+        <div class="span3">
+        <p class="text-center"><strong>Salience</strong></p>
+        </div>
+        <div class="span9">
+            <form class="form">
+                <input type="radio" name="salience" value="foreground" checked> Foreground
+                <input type="radio" name="salience" value="background"> Background
+                <input type="radio" name="salience" value="not sure"> Not Sure
+            </form>
+        </div>
+    </div>
 	<div class="span12">
     
         <!-- Feedback items for the user -->
@@ -68,16 +79,16 @@
         </div>
         <div class="span9">
         <div class="btn-group btn-group-sm">
-        <button id="preset-tag" class="btn btn-default" value="car">Car</button>
-        <button id="preset-tag" class="btn btn-default" value="subway">Subway</button>
-        <button id="preset-tag" class="btn btn-default" value="airplane">Airplane</button>
-        <button id="preset-tag" class="btn btn-default" value="talking">Talking</button>
-        <button id="preset-tag" class="btn btn-default" value="musicians">Musicians</button>
-        <button id="preset-tag" class="btn btn-default" value="gunshots">Gunshots</button>
-        <button id="preset-tag" class="btn btn-default" value="construction">Construction</button>
-        <button id="preset-tag" class="btn btn-default" value="dogs">Dogs</button>
-        <button id="preset-tag" class="btn btn-default" value="birds">Birds</button>
         <button id="preset-tag" class="btn btn-default" value="air conditioner">Air Conditioner</button>
+        <button id="preset-tag" class="btn btn-default" value="car horn">Car Horn</button>
+        <button id="preset-tag" class="btn btn-default" value="children playing">Children Playing</button>
+        <button id="preset-tag" class="btn btn-default" value="dog bark">Dog Bark</button>
+        <button id="preset-tag" class="btn btn-default" value="drilling">Drilling</button>
+        <button id="preset-tag" class="btn btn-default" value="engine idling">Engine Idling</button>
+        <button id="preset-tag" class="btn btn-default" value="gun shot">Gun Shot</button>
+        <button id="preset-tag" class="btn btn-default" value="jackhammer">Jack Hammer</button>
+        <button id="preset-tag" class="btn btn-default" value="siren">Siren</button>
+        <button id="preset-tag" class="btn btn-default" value="street music">Street Music</button>
         </div>
         </div>
     </div>
@@ -89,30 +100,18 @@
         <div class="span9">
         <form class="form">
         <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag">
-        <button class="btn btn-inverse" value='addTag' id="addTag" type="button"><i class="icon icon-white icon-plus"></i> Add Tag</button>
+        <button class="btn btn-inverse" value='addTag' id="addTag" type="button"><i class="glyphicon icon-white glyphicon-plus"></i></button>
         </form> 
         </div>
     </div>
     <div class="span12">
-        <div class="span3">
-        <p class="text-center"><strong>Description</strong></p>
-        </div>
-        <div class="span9">
-            <form class="form">
-                <input type="radio" name="description" value="foreground" checked>Foreground
-                <input type="radio" name="description" value="background">Background
-                <input type="radio" name="description" value="unsure">Unsure
-            </form>
-        </div>
-    </div>
-    <div class="span12">
-        <div class="span4 btn-group-vertical btn-group-sm" id="selected-fg"span3">
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-fg" style="border: 1px solid">
             <p class="text-center"><strong>Foreground</strong></p>
         </div>
-        <div class="span4 btn-group-vertical btn-group-sm" id="selected-bg"span3">
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-bg" style="border: 1px solid">
             <p class="text-center"><strong>Background</strong></p>
         </div>
-        <div class="span4 btn-group-vertical btn-group-sm" id="selected-uk"span3">
+        <div class="span4 btn-group-vertical btn-group-sm" id="selected-uk" style="border: 1px solid">
             <p class="text-center"><strong>Unsure</strong></p>
         </div>
     </div>
@@ -232,17 +231,25 @@ function secondsToTime(input) {
 }
 
 function addNewTag(newtag) {
-            var description = $("input[name=description]:checked").val();
+            var salience = $("input[name=salience]:checked").val();
             var elementToAdd = $("<button>", {
                 type: "button",
                 value: newtag,
                 text: newtag,
-                class: "btn btn-default"
+                class: "btn btn-default selected",
+                id: "selected"
             });
             elementToAdd.on('click', function(evt) {
                 $(this).remove();
             });
-            switch(description) {
+            /* when hover, show X icon instead
+            elementToAdd.hover(function() {
+                $(this).toggleClass('btn-default btn-danger');
+            });
+            */
+            elementToAdd.css("margin", "5px");
+            
+            switch(salience) {
                 case "foreground":
                     $("#selected-fg").append(elementToAdd);
                     break;
@@ -296,6 +303,7 @@ pybossa.presentTask(function(task, deferred) {
 		$("#soundclip").attr("src", task.info.clip_url);
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
+        $("[id=preset-tag]").css("margin", "2px");
         
         var soundclip = document.getElementById("soundclip");
         var playslider = document.getElementById("playslider");
@@ -331,7 +339,6 @@ pybossa.presentTask(function(task, deferred) {
         });
         
         $("[id=preset-tag]").on("click", function() {
-            console.log("hi");
             var newtag = $(this).val();
             addNewTag(newtag);
         });
@@ -352,7 +359,7 @@ pybossa.presentTask(function(task, deferred) {
         ];
         
         $( "#custom-input" ).autocomplete({
-        source: availableTags
+            source: availableTags
         });
 
         $("#addTag").on("click", function(evt) {
@@ -370,11 +377,11 @@ pybossa.presentTask(function(task, deferred) {
                 $("#addTag").removeClass("disabled");
 
                 } );
-                
+        
         $("#toggle-info").on("click", function(evt) {
             $("#extra-info").toggle();        
         });
-                
+        
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
             if ((typeof answer != 'undefined') && (answer == 'addTag')) {
