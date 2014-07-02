@@ -30,6 +30,34 @@
     </div> <!-- End Success and Error Messages for the user -->
 </div> <!-- End of Row -->
 
+<!-- Initial form -->
+<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="480">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div>
+            Welcome new contributor! Please complete our short survey before you begin. This will help us interpret data more precisely.
+        </div>
+            <div>How old are you? <input type="text"></div>
+            <div>Where do you live? <input type="text"></div>
+            <div>
+            <form class="form">
+                Have you participated in CrowdCrafting before? 
+                <input type="radio" name="q4" value="Yes" checked> Yes
+                <input type="radio" name="q4" value="No"> No
+            </form>
+            </div>
+            <div>
+            <form class="form">
+                Is Poly the best school in America?
+                <input type="radio" name="q4" value="Yes" checked> Yes
+                <input type="radio" name="q4" value="Yes"> Yes
+            </form>
+            </div>
+        <button class="btn pull-right" id="submit-form" type="button">Submit</button>
+    </div>
+  </div>
+</div>
+
 <!--
     Task DOM for loading the Flickr Images
     It uses the class="skeleton" to identify the elements that belong to the
@@ -128,6 +156,9 @@
         <div class="progress progress-striped">
             <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
         </div>
+        <div>Debug: Click this to make the cookie expire
+            <button id="clear-cookie" class="btn" onclick="expireCookie()">Reset Timer</button>
+        </div>
 	</div>
 </div>
         <!-- 
@@ -210,11 +241,22 @@ function getCookie(cname) {
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
-       alert("Hello new contributor! Cookie is now set to last 30 minutes");
-       //cookie lasts for 5 minutes for now, change time to something realistic later
+       //alert("Hello new contributor! Cookie is now set to last 30 minutes");
+       //cookie lasts for 30 minutes for now, change time to something realistic later
        uniqueID = GUID();
        setCookie("uid", uniqueID, 1800);
+       showIntroForm();
     }
+}
+
+//remove later: for debugging purposes only, immediately expires the cookie
+function expireCookie() {
+    setCookie("uid", 1, -1);
+}
+
+function showIntroForm() {
+    $("#init-form").modal("show");
+    console.log("func");
 }
 
 //from seconds to minutes:seconds.milliseconds
