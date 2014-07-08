@@ -311,11 +311,15 @@ function addNewTag(newtag) {
             elementToAdd.on('click', function(evt) {
                 $(this).remove();
             });
-            /* when hover, show X icon instead
+            // temporary, change hover to something better
             elementToAdd.hover(function() {
                 $(this).toggleClass('btn-default btn-danger');
+                $(this).prepend("<i class='glyphicon icon-white glyphicon-remove'></i>");
+            }, function() {
+                $(this).toggleClass('btn-default btn-danger');
+                $(this).find("i").remove();
             });
-            */
+            
             elementToAdd.css("margin", "5px");
             
             switch(salience) {
