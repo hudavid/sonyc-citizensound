@@ -304,20 +304,16 @@ function addNewTag(newtag) {
             var elementToAdd = $("<button>", {
                 type: "button",
                 value: newtag,
-                text: newtag,
                 class: "btn btn-default selected",
                 //id: "selected"
             });
+            elementToAdd.append("<span>"+newtag+"</span><span style='display:none'>Delete</span>");
             elementToAdd.on('click', function(evt) {
                 $(this).remove();
             });
-            // temporary, change hover to something better
             elementToAdd.hover(function() {
+                $(this).children().toggle();
                 $(this).toggleClass('btn-default btn-danger');
-                $(this).prepend("<i class='glyphicon icon-white glyphicon-remove'></i>");
-            }, function() {
-                $(this).toggleClass('btn-default btn-danger');
-                $(this).find("i").remove();
             });
             
             elementToAdd.css("margin", "5px");
