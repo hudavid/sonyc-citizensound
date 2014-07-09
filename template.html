@@ -30,7 +30,7 @@
     </div> <!-- End Success and Error Messages for the user -->
 </div> <!-- End of Row -->
 
-<!-- Initial form -->
+<!-- Initial form
 <div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="480">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -56,6 +56,16 @@
         <button class="btn pull-right" id="submit-form" type="button">Submit</button>
     </div>
   </div>
+</div>
+-->
+<!-- Temporary google form replacement -->
+<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <span><strong>Your UID is: </strong></span><span id="form-uid">...</span>
+        <iframe src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="500" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+        </div>
+    </div>
 </div>
 
 <!--
@@ -280,7 +290,8 @@ function checkCookie() {
        //cookie lasts for 30 minutes for now, change time to something realistic later
        uniqueID = GUID();
        setCookie("uid", uniqueID, 1800);
-       showIntroForm();
+       //showIntroForm();
+       showGoogleForm(uniqueID);
     }
 }
 
@@ -292,6 +303,12 @@ function expireCookie() {
 function showIntroForm() {
     $("#init-form").modal("show");
     console.log("func");
+}
+
+//google form version
+function showGoogleForm(UID) {
+    document.getElementById("form-uid").innerHTML = UID;
+    showIntroForm();
 }
 
 //from seconds to minutes:seconds.milliseconds
