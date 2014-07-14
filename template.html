@@ -63,9 +63,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <span><strong>Your personal code is: </strong></span><span><input id="form-uid" type="text" value="..." size="36" readonly></span>
-            <iframe src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="600" height="640" frameborder="0" marginheight="0" marginwidth="0" onhaschange="formSubmitted()">Loading...</iframe>
+            <iframe id="gform" src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="600" height="640" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
             <div>
-                <button class="btn btn-lg" id="continue" onclick="closeForm()">Continue</button>
+                <button class="btn btn-lg" id="continue" onclick="closeForm()" style="display: none">Continue</button>
+            </div>
+            <div>
+                <button class="btn btn-lg" id="continue-debug" onclick="closeForm()">Debug: Skip Form</button>
             </div>
         </div>
     </div>
@@ -442,6 +445,8 @@ pybossa.taskLoaded(function(task, deferred) {
 pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
+        var form = document.getElementById("gform");
+        $(form).attr("onload", "formSubmitted()");
         checkCookie();
 		$('#task-id').html(task.id);
         $("#addTag").show();
