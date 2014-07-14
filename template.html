@@ -110,7 +110,7 @@
         <h3>Step 1</h3>
         <p><strong>Select a salience level</strong></p>
         </div>
-        <div class="span9">
+        <div class="span9" style="text-align:center">
             <br>
             <div id="salience-levels" class="btn-group btn-group-sm">
                 <button id="salience" class="btn btn-primary" value="foreground">Foreground</button>
@@ -150,11 +150,11 @@
         <h3>Step 3</h3>
         <p><strong>Add custom tags if needed</strong></p>
         </div>
-        <div class="span9">
+        <div class="span9" style="text-align:center">
         <br>
         <form class="form">
-        <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag" style="margin: 2px">
-        <button class="btn btn-inverse" value='addTag' id="addTag" type="button"><i class="glyphicon icon-white glyphicon-plus"></i></button>
+        <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag">
+        <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px"><i class="glyphicon icon-white glyphicon-plus"></i></button>
         </form> 
         </div>
     </div>
@@ -185,12 +185,12 @@
         </div>
     </div>
     </div>
-    <div class="span12" style="border: 1px dashed gray"></div>
-    <div>
-        <br><br>
+    <div class="span12" style="border: 1px dashed gray; margin: 10px"></div>
+    <div class="span6">
         <strong>Comments/feedback here</strong>
+        <div><textarea class="form-control" placeholder="Feedback here" style="resize: vertical" rows="5"></textarea></div>
     </div>
-    <div class="span4"><textarea class="form-control" placeholder="Feedback here"></textarea></div>
+    <div class="span6">
     <button class="btn btn-inverse btn-sm" id="toggle-info" type="button">Show/Hide Details</button>
     <div id="extra-info" style="display:none">
 		 <p>The current task ID is: <span id="task-id" class="label label-info">#</span></p>
@@ -205,6 +205,7 @@
             <button id="clear-cookie" class="btn" onclick="expireCookie()">Reset Timer</button>
         </div>
 	</div>
+    </div>
 </div>
         <!-- 
             This application uses Disqus to allow users to provide some feedback.
