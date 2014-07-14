@@ -159,6 +159,8 @@
         <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag">
         <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px"><i class="glyphicon icon-white glyphicon-plus"></i></button>
         </form> 
+        <div id="custom-warning" style="color: red; display: none">You can't submit an empty tag
+        </div>
         </div>
     </div>
     <div class="span12">
@@ -347,6 +349,7 @@ function addNewTag(newtag) {
             else {
             $("#salience-warning").hide();
             $("#tag-warning").hide();
+            $("#custom-warning").hide();
             $("[id=salience]").removeClass("active");
             console.log(salience);
             var elementToAdd = $("<button>", {
@@ -517,7 +520,13 @@ pybossa.presentTask(function(task, deferred) {
 
         $("#addTag").off("click").on("click", function(evt) {
             var newtag = $("#custom-input").val();
-            addNewTag(newtag);
+            if (/\S/.test(newtag)) {
+                $("#custom-warning").hide();
+                addNewTag(newtag);
+            }
+            else {
+                $("#custom-warning").show();
+            }
         });
 
         $('form').submit(function(e){
