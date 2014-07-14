@@ -59,11 +59,14 @@
 </div>
 -->
 <!-- Temporary google form replacement -->
-<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true">
+<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="500" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-        <span><strong>Your personal code is: </strong></span><span id="form-uid">...</span>
-        <iframe src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="500" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            <span><strong>Your personal code is: </strong></span><span><input id="form-uid" type="text" value="..." size="36" readonly></span>
+            <iframe src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="600" height="640" frameborder="0" marginheight="0" marginwidth="0" onhaschange="formSubmitted()">Loading...</iframe>
+            <div>
+                <button class="btn btn-lg" id="continue" onclick="closeForm()">Continue</button>
+            </div>
         </div>
     </div>
 </div>
@@ -309,7 +312,18 @@ function showIntroForm() {
 //google form version
 function showGoogleForm(UID) {
     document.getElementById("form-uid").innerHTML = UID;
+    document.getElementById("form-uid").value = UID;
     showIntroForm();
+}
+
+//called when intro survey is submitted
+function formSubmitted() {
+    $("#continue").show();
+    console.log("continue");
+}
+
+function closeForm() {
+    $("#init-form").modal("hide");
 }
 
 //from seconds to minutes:seconds.milliseconds
