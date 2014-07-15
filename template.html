@@ -116,7 +116,7 @@
         <h3>Step 1</h3>
         <p><strong>Select a salience level</strong></p>
         </div>
-        <div class="span9" style="text-align:center">
+        <div class="span9">
             <br>
             <div id="salience-levels" class="btn-group btn-group-sm">
                 <button id="salience" class="btn btn-primary" value="foreground">Foreground</button>
@@ -156,7 +156,7 @@
         <h3>Step 3</h3>
         <p><strong>Add custom tags if needed</strong></p>
         </div>
-        <div class="span9" style="text-align:center">
+        <div class="span9">
         <br>
         <form class="form">
         <input id="custom-input" type="text" name="inputTag" id="inputTag" placeholder="custom tag">
@@ -186,7 +186,7 @@
             <h3>Step 5</h3>
             <p><strong>Repeat steps 1-4 until you've tagged all sounds in the recording, and then submit</strong></p>
         </div>
-    <div class="span9" style="text-align:center">
+    <div class="span9">
         <br>
         <button class="btn btn-inverse btn-answer btn-answer" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
         <div id="tag-warning" style="color: red; display: none">Please include at least one tag!
@@ -504,19 +504,60 @@ pybossa.presentTask(function(task, deferred) {
             addNewTag(newtag);
         });
         
-        //re-enabled autocomplete again
          var availableTags = [
-            "engine idling",
-            "car horn",
-            "car brakes",
-            "train brakes",
-            "police siren",
-            "jackhammer",
-            "drilling",
-            "gun shot",
-            "dog bark",
-            "street music",
-            "air conditioner",
+            "Speech",
+            "Laughter",
+            "Shouting",
+            "Crying",
+            "Coughing",
+            "Sneezing",
+            "Singing",
+            "Infant",
+            "Children playing",
+            "Footsteps",
+            "Wind",
+            "Water",
+            "Thunder",
+            "Dog bark",
+            "Dog howl",
+            "Bird tweet",
+            "Leaves rustling",
+            "Jackhammer",
+            "Hammering",
+            "Drilling",
+            "Sawing",
+            "Explosion",
+            "Air conditioner",
+            "Bells",
+            "Clock chimes",
+            "Alarm",
+            "Fireworks",
+            "Gun shot",
+            "Bicycle spokes",
+            "Bicycle bell",
+            "Train:Wheels on tracks",
+            "Train:Rumble",
+            "Train:Breaks screeching",
+            "Train:Recorded announcements",
+            "Siren",
+            "Engine idling",
+            "Engine passing",
+            "Engine accelerating",
+            "Car horn",
+            "Vehicle brakes screeching",
+            "Vehicle wheels passing",
+            "Vehicle pneumatics",
+            "Vehicle backing up beeping",
+            "Vehicle rattling parts",
+            "Grabage truck:Hydraulic rams",
+            "Helicopter",
+            "Airplane",
+            "Music:Street music",
+            "Music:House party",
+            "Music:Club",
+            "Music:Car radio",
+            "Music:Ice cream truck",
+            "Music:Boombox/speakers"
         ];
         
         $( "#custom-input" ).autocomplete({
