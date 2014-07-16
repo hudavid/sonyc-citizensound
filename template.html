@@ -196,7 +196,7 @@
     <div class="span12" style="border: 1px dashed gray; margin: 10px"></div>
     <div class="span6">
         <strong>Comments/feedback here</strong>
-        <div><textarea class="form-control" placeholder="Feedback here" style="resize: vertical" rows="5"></textarea></div>
+        <div><textarea id="comment-box" class="form-control" placeholder="Feedback here" style="resize: vertical" rows="5"></textarea></div>
     </div>
     <div class="span6">
     <button class="btn btn-inverse btn-sm" id="toggle-info" type="button">Show/Hide Details</button>
@@ -600,6 +600,7 @@ pybossa.presentTask(function(task, deferred) {
             //add in "name" field to test cookie storage
                 var tag = getTags();
                 tag.uid = getCookie("uid");
+                tag.comments = $("#comment-box").val();
                 pybossa.saveTask(task.id, tag).done(function() {
                     
                     $("#inputTag").hide();
