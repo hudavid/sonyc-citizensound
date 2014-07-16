@@ -601,12 +601,14 @@ pybossa.presentTask(function(task, deferred) {
                 var tag = getTags();
                 tag.uid = getCookie("uid");
                 tag.comments = $("#comment-box").val();
+                tag.app_id = "initial_test"; //app_id should change according to version
                 pybossa.saveTask(task.id, tag).done(function() {
                     
                     $("#inputTag").hide();
                     $("#inputTag").val("");
                     //$("#inputTag").addClass("disabled");
                     $("#addTag").hide();
+                    $("#comment-box").val("");
                     deferred.resolve();
 
                 });
