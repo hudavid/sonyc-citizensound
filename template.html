@@ -59,7 +59,7 @@
 </div>
 -->
 <!-- Temporary google form replacement -->
-<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="500" data-backdrop="static" data-keyboard="false">
+<div class="modal" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="500" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <span><strong>Your personal code is: </strong></span><span><input id="form-uid" type="text" value="..." size="36" readonly></span>
@@ -89,7 +89,7 @@
         <div id="spectrals">
         </div>
     <div>
-        <audio id="soundclip" autoplay preload="auto">
+        <audio id="soundclip" preload="auto">
         <p>Your browser doesn't support audio elements</p>
         </audio>
         <div id="playslider" style="margin-top:5px">
@@ -335,6 +335,7 @@ function formSubmitted() {
 
 function closeForm() {
     $("#init-form").modal("hide");
+    document.getElementById("soundclip").play();
 }
 
 //from seconds to minutes:seconds.milliseconds
@@ -638,6 +639,11 @@ pybossa.presentTask(function(task, deferred) {
             }
             */
         });
+        
+        if (!$("#init-form").hasClass("in")) {
+            console.log("sup");
+            soundclip.play();
+        }
         
         $("#loading").hide();
     }
