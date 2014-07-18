@@ -468,6 +468,13 @@ pybossa.presentTask(function(task, deferred) {
         var soundclip = document.getElementById("soundclip");
         var playslider = document.getElementById("playslider");
         
+        //function to flip play/pause icon to play
+        var switchToPlay = function(event) {
+            $("#play-button").addClass("glyphicon-play").removeClass("glyphicon-pause");
+        };
+        
+        soundclip.addEventListener("ended", switchToPlay);
+        
         $("#playslider").slider({
             range: false,
             min: 0,
