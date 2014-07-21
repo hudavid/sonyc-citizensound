@@ -82,61 +82,27 @@
     <div class="span12">
         <div class="span3 text-center">
         <h3>Step 1</h3>
-        <p><strong>Select a salience level</strong></p>
-        </div>
-        <div class="span9">
-            <br>
-            <div id="salience-levels" class="btn-group btn-group-sm">
-                <button id="salience" class="btn btn-primary" value="foreground">Foreground</button>
-                <button id="salience" class="btn btn-primary" value="background">Background</button>
-                <button id="salience" class="btn btn-primary" value="not sure">Not Sure</button>
-            </div>
-            <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
-            </div>
-        </div>
-    </div>
-	<div class="span12">
-    
-        <!-- Feedback items for the user -->
-        <div class="span3 text-center">
-        <h3>Step 2</h3>
         <p><strong>Add tags (you can add as many as you need)</strong></p>
         </div>
         <div class="span9">
-        <br>
-        <div class="btn-group btn-group-sm">
-        <button id="preset-tag" class="btn btn-default" value="air conditioner">Air Conditioner</button>
-        <button id="preset-tag" class="btn btn-default" value="car horn">Car Horn</button>
-        <button id="preset-tag" class="btn btn-default" value="children playing">Children Playing</button>
-        <button id="preset-tag" class="btn btn-default" value="dog bark">Dog Bark</button>
-        <button id="preset-tag" class="btn btn-default" value="drilling">Drilling</button>
-        <button id="preset-tag" class="btn btn-default" value="engine idling">Engine Idling</button>
-        <button id="preset-tag" class="btn btn-default" value="gun shot">Gun Shot</button>
-        <button id="preset-tag" class="btn btn-default" value="jackhammer">Jackhammer</button>
-        <button id="preset-tag" class="btn btn-default" value="siren">Siren</button>
-        <button id="preset-tag" class="btn btn-default" value="street music">Street Music</button>
-        </div>
-        </div>
-    </div>
-    
-    <div class="span12">
-        <div class="span3 text-center">
-        <h3>Step 3</h3>
-        <p><strong>Add custom tags if needed</strong></p>
-        </div>
-        <div class="span9">
-        <br>
-        <form class="form">
-        <input id="custom-input" type="text" name="inputTag" placeholder="custom tag">
-        <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px"><i class="glyphicon icon-white glyphicon-plus"></i></button>
-        </form> 
-        <div id="custom-warning" style="color: red; display: none">You can't submit an empty tag
-        </div>
+            <br>
+            <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
+            </div>
+            <br>
+            <input id="custom-input" type="text" name="inputTag" placeholder="add tag">
+            <span id="salience-levels" class="btn-group btn-group-sm">
+                <button id="salience" class="btn btn-primary" value="foreground">Foreground</button>
+                <button id="salience" class="btn btn-primary" value="background">Background</button>
+                <button id="salience" class="btn btn-primary" value="not sure">Not Sure</button>
+            </span>
+            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px"><i class="glyphicon icon-white glyphicon-plus"></i></button> 
+            <div id="custom-warning" style="color: red; display: none">You can't submit an empty tag
+            </div>
         </div>
     </div>
     <div class="span12">
         <div class="span3 text-center">
-            <h3>Step 4</h3>
+            <h3>Step 2</h3>
             <p><strong>Review tags (click to remove)</strong></p>
         </div>
         <div class="span3 btn-group-vertical btn-group-sm" id="selected-fg">
@@ -151,8 +117,8 @@
     </div>
     <div class="span12">
         <div class="span3 text-center">
-            <h3>Step 5</h3>
-            <p><strong>Repeat steps 1-4 until you've tagged all sounds in the recording, and then submit</strong></p>
+            <h3>Step 3</h3>
+            <p><strong>Repeat steps 1-2 until you've tagged all sounds in the recording, and then submit</strong></p>
         </div>
     <div class="span9">
         <br>
