@@ -30,35 +30,7 @@
     </div> <!-- End Success and Error Messages for the user -->
 </div> <!-- End of Row -->
 
-<!-- Initial form
-<div class="modal fade" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="480">
-  <div class="modal-dialog">
-    <div class="modal-content">
-        <div>
-            Welcome new contributor! Please complete our short survey before you begin. This will help us interpret data more precisely.
-        </div>
-            <div>How old are you? <input type="text"></div>
-            <div>Where do you live? <input type="text"></div>
-            <div>
-            <form class="form">
-                Have you participated in CrowdCrafting before? 
-                <input type="radio" name="q4" value="Yes" checked> Yes
-                <input type="radio" name="q4" value="No"> No
-            </form>
-            </div>
-            <div>
-            <form class="form">
-                Is Poly the best school in America?
-                <input type="radio" name="q4" value="Yes" checked> Yes
-                <input type="radio" name="q4" value="Yes"> Yes
-            </form>
-            </div>
-        <button class="btn pull-right" id="submit-form" type="button">Submit</button>
-    </div>
-  </div>
-</div>
--->
-<!-- Temporary google form replacement -->
+<!-- Initial form -->
 <div class="modal" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="500" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -75,9 +47,7 @@
 </div>
 
 <!--
-    Task DOM for loading the Flickr Images
-    It uses the class="skeleton" to identify the elements that belong to the
-    task.
+    Task DOM for loading images
 -->
 <div class="row skeleton"> <!-- Start Skeleton Row-->
     <div class="span12"><!-- Start of Question and Submission DIV (column) -->
@@ -98,15 +68,13 @@
         <span class="text-center span11" style="position: relative">
         <button class="btn btn-lg" id="play"><i id="play-button" class="glyphicon glyphicon-play"></i> </button>
     
-        <button class="btn btn-lg" id="stop"><i id="stop-button" class="glyphicon glyphicon-backward"></i> </button>
+        <button class="btn btn-lg" id="reverse"><i id="reverse-button" class="glyphicon glyphicon-backward"></i> </button>
         <span id="slider-current">00:00:00 / 00:00:00
         </span>
         </span>
         <span class="span1">
             <a href="/app/sonycv1/tutorial"><button class="btn btn-inverse pull-right">Show Tutorial</button></a>
         </span>
-        </div>
-        <div id="debug">
         </div>
     </div>
     </div><!-- End of Question and Submission DIV (column) -->
@@ -257,14 +225,6 @@
 -->
 <script>
 
-function fromPixelsToSeconds(pixel, duration){ 
-    return ((pixel * duration) / 900)
-}
-
-function fromSecondsToPixels(seconds, duration){ 
-    return Math.round((secons * 900)/ duration);
-}
-
 //GUID generator code adapted from http://guid.us/
 function S4() {
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
@@ -295,12 +255,10 @@ function getCookie(cname) {
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
-       //alert("Hello new contributor! Cookie is now set to last 30 minutes");
        //cookie lasts for 30 minutes for now, change time to something realistic later
        uniqueID = GUID();
        setCookie("uid", uniqueID, 1800);
-       //showIntroForm();
-       showGoogleForm(uniqueID);
+       showIntroForm(uniqueID);
     }
 }
 
@@ -312,25 +270,17 @@ function expireCookie() {
 function formLoaded() {
     var form = document.getElementById("gform");
     $(form).attr("onload", "formSubmitted()");
-    console.log("formLoaded() called");
 }
 
-function showIntroForm() {
-    $("#init-form").modal("show");
-    console.log("func");
-}
-
-//google form version
-function showGoogleForm(UID) {
+function showIntroForm(UID) {
     document.getElementById("form-uid").innerHTML = UID;
     document.getElementById("form-uid").value = UID;
-    showIntroForm();
+    $("#init-form").modal("show");
 }
 
 //called when intro survey is submitted
 function formSubmitted() {
     $("#continue").show();
-    console.log("continue");
 }
 
 function closeForm() {
@@ -338,7 +288,7 @@ function closeForm() {
     document.getElementById("soundclip").play();
 }
 
-//from seconds to minutes:seconds.milliseconds
+//from seconds to mm:ss.ms format
 function secondsToTime(input) {
     var minutes = Math.floor(input / 60);
     if (minutes < 10) {
@@ -352,48 +302,47 @@ function secondsToTime(input) {
 }
 
 function addNewTag(newtag) {
-            var salience = $("#salience-levels .active").val();
-            if (typeof salience == 'undefined') {
-                $("#salience-warning").show();
-            }
-            else {
-            $("#salience-warning").hide();
-            $("#tag-warning").hide();
-            $("#custom-warning").hide();
-            $("#custom-input").val("");
-            $("[id=salience]").removeClass("active");
-            console.log(salience);
-            var elementToAdd = $("<button>", {
-                type: "button",
-                value: newtag,
-                class: "btn btn-default selected",
-                //id: "selected"
-            });
-            elementToAdd.append("<span>"+newtag+"</span><span style='display:none'>Delete</span>");
-            elementToAdd.on('click', function(evt) {
-                $(this).remove();
-            });
-            elementToAdd.hover(function() {
-                $(this).children().toggle();
-                $(this).toggleClass('btn-default btn-danger');
-            });
-            
-            elementToAdd.css("margin", "5px");
-            
-            switch(salience) {
-                case "foreground":
-                    elementToAdd.attr('id', 'tag-fg');
-                    $("#selected-fg").append(elementToAdd);
-                    break;
-                case "background":
-                    elementToAdd.attr('id', 'tag-bg');
-                    $("#selected-bg").append(elementToAdd);
-                    break;
-                default:
-                    elementToAdd.attr('id', 'tag-un');
-                    $("#selected-uk").append(elementToAdd);
-            }
-            }
+    var salience = $("#salience-levels .active").val();
+    if (typeof salience == 'undefined') {
+        $("#salience-warning").show();
+    }
+    else {
+        $("#salience-warning").hide();
+        $("#tag-warning").hide();
+        $("#custom-warning").hide();
+        $("#custom-input").val("");
+        $("[id=salience]").removeClass("active");
+        var elementToAdd = $("<button>", {
+            type: "button",
+            value: newtag,
+            class: "btn btn-default selected",
+            //id: "selected"
+        });
+        elementToAdd.append("<span>"+newtag+"</span><span style='display:none'>Delete</span>");
+        elementToAdd.on('click', function(evt) {
+            $(this).remove();
+        });
+        elementToAdd.hover(function() {
+            $(this).children().toggle();
+            $(this).toggleClass('btn-default btn-danger');
+        });
+        
+        elementToAdd.css("margin", "5px");
+        
+        switch(salience) {
+            case "foreground":
+                elementToAdd.attr('id', 'tag-fg');
+                $("#selected-fg").append(elementToAdd);
+                break;
+            case "background":
+                elementToAdd.attr('id', 'tag-bg');
+                $("#selected-bg").append(elementToAdd);
+                break;
+            default:
+                elementToAdd.attr('id', 'tag-un');
+                $("#selected-uk").append(elementToAdd);
+        }
+    }
 }
 
 function getTags() {
@@ -456,7 +405,6 @@ pybossa.presentTask(function(task, deferred) {
         checkCookie();
 		$('#task-id').html(task.id);
         $("#addTag").show();
-		//$("#inputTag").show();
         $("#spectrals").html(task.info.img);
 		$("#soundclip").attr("src", task.info.clip_url);
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
@@ -502,7 +450,7 @@ pybossa.presentTask(function(task, deferred) {
             $("#play-button").toggleClass('glyphicon-play glyphicon-pause');
         });
         
-        $("#stop").off("click").on("click", function() {
+        $("#reverse").off("click").on("click", function() {
             soundclip.currentTime = 0;
         });
         
@@ -596,8 +544,7 @@ pybossa.presentTask(function(task, deferred) {
 
         $( "#custom-input" ).on( "autocompleteclose", function( event, ui ) {
                 $("#addTag").removeClass("disabled");
-
-                } );
+        });
         
         $("#toggle-info").off("click").on("click", function(evt) {
             $("#extra-info").toggle();        
@@ -605,27 +552,23 @@ pybossa.presentTask(function(task, deferred) {
         
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
-            //if ((typeof answer != 'undefined') && (answer == 'addTag')) {
             if ($(".selected").length == 0) {
                 $("#tag-warning").show();
             }
             else {
-            //add in "name" field to test cookie storage
                 var tag = getTags();
                 tag.uid = getCookie("uid");
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
                 pybossa.saveTask(task.id, tag).done(function() {
-                    
                     $("#inputTag").hide();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
                     $("#addTag").hide();
                     $("#comment-box").val("");
                     deferred.resolve();
-
                 });
-                $("#loading").fadeIn(500);
+                $("#loading").fadeIn(200);
 				/*
                 if ($("#disqus_thread").is(":visible")) {
                     $('#disqus_thread').toggle();
@@ -641,7 +584,6 @@ pybossa.presentTask(function(task, deferred) {
         });
         
         if (!$("#init-form").hasClass("in")) {
-            console.log("sup");
             soundclip.play();
         }
         
@@ -650,7 +592,7 @@ pybossa.presentTask(function(task, deferred) {
     else {
         $(".skeleton").hide();
         $("#loading").hide();
-        $("#finish").fadeIn(500);
+        $("#finish").fadeIn(200);
     }
 });
 
