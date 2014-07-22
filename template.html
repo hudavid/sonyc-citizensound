@@ -527,6 +527,8 @@ pybossa.presentTask(function(task, deferred) {
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
                 pybossa.saveTask(task.id, tag).done(function() {
+                    //find way to make it scroll up smoothly
+                    $(document).scrollTop(0);
                     $("#inputTag").hide();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
