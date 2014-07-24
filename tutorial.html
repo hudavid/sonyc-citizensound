@@ -141,6 +141,10 @@
     </div>
 </div>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname+"="+cvalue;
+    }
+
     var step = -1;
     function showStep(action) {
         $("#" + step).hide();
@@ -166,7 +170,8 @@
 
         $("#" + step).show();
     }
-
+    
+    setCookie("sonycv1tutorial", "seen");
     showStep('next');
     $("#modal").modal('show');
 </script>
