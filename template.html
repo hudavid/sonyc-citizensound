@@ -216,7 +216,7 @@ function setCookie(cname,cvalue,expireTime) {
     var date = new Date();
     date.setTime(Date.now() + (expireTime*1000));
     var expires = "expires=" + date.toGMTString();
-    document.cookie = cname+"="+cvalue+"; "+expires;
+    document.cookie = cname+"="+cvalue+"; "+expires+"; path=/app/sonycv1/task/";
 }
 
 function getCookie(cname) {
