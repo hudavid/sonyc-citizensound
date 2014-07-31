@@ -9,6 +9,10 @@
         overflow-y: auto;
         overflow-x: hidden;
     }
+    
+    .salience {
+        margin: 5px;
+    }
     </style>
 </head>
 
@@ -104,9 +108,9 @@
             <br>
             <input id="custom-input" type="text" name="inputTag" placeholder="add tag">
             <span id="salience-levels" class="btn-group btn-group-sm">
-                <button id="salience" class="btn btn-primary" value="foreground">Foreground</button>
-                <button id="salience" class="btn btn-primary" value="background">Background</button>
-                <button id="salience" class="btn btn-primary" value="not sure">Not Sure</button>
+                <button id="salience" class="btn btn-primary salience" value="foreground">Foreground</button>
+                <button id="salience" class="btn btn-primary salience" value="background">Background</button>
+                <button id="salience" class="btn btn-primary salience" value="not sure">Not Sure</button>
             </span>
             <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px"><i class="glyphicon icon-white glyphicon-plus"></i></button> 
         </div>
@@ -393,7 +397,7 @@ pybossa.presentTask(function(task, deferred) {
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
         $("[id=preset-tag]").css("margin", "2px");
-        $("[id=salience]").css("margin", "2px");
+        //$("[id=salience]").css("margin", "2px");
         $("[id=salience]").removeClass("active");
         $(".selected").remove();
         
