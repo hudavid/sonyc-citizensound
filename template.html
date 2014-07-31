@@ -154,9 +154,15 @@
         <div class="progress progress-striped">
             <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
         </div>
-        <div>Debug: Click this to make the cookie expire
+        <div>Debug: Click this to make the cookie expire</div>
+        <div>
             <button id="clear-cookie" class="btn" onclick="expireCookie()">Reset Timer</button>
         </div>
+        <div>Debug: Click this to play sound in IE (doesn't work for other browsers)</div>
+        <div>
+            <button id="ie-play" class="btn">Play</button>
+        </div>
+        <bgsound id="iesound">
 	</div>
     </div>
 </div>
@@ -393,6 +399,11 @@ pybossa.presentTask(function(task, deferred) {
         
         var soundclip = document.getElementById("soundclip");
         var playslider = document.getElementById("playslider");
+        
+        //test for IE playback
+        $("#ie-play").off("click").on("click", function() {
+            document.all.iesound.src = task.info.clip_url;
+        });
         
         //function to flip play/pause icon to play
         var switchToPlay = function(event) {
