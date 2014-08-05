@@ -4,6 +4,10 @@
 <!-- change css of entire page -->
 <head>
     <style>
+    .h1 {
+        margin-top: 0px;
+    }
+    
     .ui-autocomplete {
         max-height: 250px;
         overflow-y: auto;
@@ -18,7 +22,7 @@
 
 <div class="row">
     <!-- Success and Error Messages for the user --> 
-    <div class="span6 offset2" style="height:50px">
+    <div class="span6 offset2">
         <div id="success" class="alert alert-success" style="display:none;">
             <a class="close">×</a>
             <strong>Well done!</strong> Your answer has been saved
@@ -64,7 +68,7 @@
 <!--
     Task DOM for loading images
 -->
-<div class="row skeleton"> <!-- Start Skeleton Row-->
+<div class="row skeleton span12"> <!-- Start Skeleton Row-->
     <div class="span12"><!-- Start of Question and Submission DIV (column) -->
         <h1 id="question">Label this sound clip</h1> <!-- The question will be loaded here -->
     </div>
@@ -96,12 +100,18 @@
     </div><!-- End of Question and Submission DIV (column) -->
     <!-- used line breaks to vertically center things, find more legit method later -->
     <div class="span12">
+        <div class="span3"></div>
+        <div class="span9">
+            <br>
+            <input id="uncertain" type="checkbox" name="not sure" onclick="uncertain(this)"> I can't identify any of the sound sources in this recording
+        </div>
+    </div>
+    <div id="step1" class="span12">
         <div class="span3 text-center">
         <h3>Step 1</h3>
         <p><strong>Add tags (you can add as many as you need)</strong></p>
         </div>
         <div class="span9">
-            <br>
             <div id="custom-warning" style="color: red; display: none">You can't submit an empty tag
             </div>
             <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
@@ -116,7 +126,7 @@
             <button class="btn btn-default" value='addTag' id="addTag" type="button" style="margin: 5px 2px">Add Tag</button> 
         </div>
     </div>
-    <div class="span12">
+    <div id="step2" class="span12">
         <div class="span3 text-center">
             <h3>Step 2</h3>
             <p><strong>Review tags (click to remove)</strong></p>
@@ -131,7 +141,7 @@
             <p class="text-center"><strong>Not Sure</strong></p>
         </div>
     </div>
-    <div class="span12">
+    <div id="step3" class="span12">
         <div class="span3 text-center">
             <h3>Step 3</h3>
             <p><strong>Repeat steps 1-2 until you've tagged all sounds in the recording, and then submit</strong></p>
@@ -287,6 +297,17 @@ function secondsToTime(input) {
         seconds = "0"+seconds;
     }
     return minutes+":"+seconds;
+}
+
+function uncertain(checkbox) {
+    if (checkbox.checked) {
+        $("#step1").hide();
+        $("#step2").hide();
+    }
+    else {
+        $("#step1").show();
+        $("#step2").show();
+    }
 }
 
 function addNewTag(newtag) {
