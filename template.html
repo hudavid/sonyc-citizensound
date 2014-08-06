@@ -350,24 +350,27 @@ function addNewTag(newtag) {
 }
 
 function getTags() {
-    var fg = $('[id=tag-fg]');
-    var bg = $('[id=tag-bg]');
-    var un = $('[id=tag-un]');
-    
     var tags = {};
     tags.foreground = new Array();
-    for (i = 0; i < fg.length; i++) {
-        tags.foreground.push(fg[i].value);
-    }
-    
     tags.background = new Array();
-    for (i = 0; i < bg.length; i++) {
-        tags.background.push(bg[i].value);
-    }
-    
     tags.unsure = new Array();
-    for (i = 0; i < un.length; i++) {
-        tags.unsure.push(un[i].value);
+    
+    if (!$("#uncertain").is(":checked")) {
+        var fg = $('[id=tag-fg]');
+        var bg = $('[id=tag-bg]');
+        var un = $('[id=tag-un]');
+        
+        for (i = 0; i < fg.length; i++) {
+            tags.foreground.push(fg[i].value);
+        }
+        
+        for (i = 0; i < bg.length; i++) {
+            tags.background.push(bg[i].value);
+        }
+        
+        for (i = 0; i < un.length; i++) {
+            tags.unsure.push(un[i].value);
+        }
     }
     return tags;
 }
@@ -594,6 +597,7 @@ pybossa.presentTask(function(task, deferred) {
                 tag.uid = getCookie("uid");
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
+                tag.notSure = $("#uncertain").is(":checked");
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
