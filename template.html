@@ -103,7 +103,7 @@
         <div class="span3"></div>
         <div class="span9">
             <br>
-            <input id="uncertain" type="checkbox" name="not sure" onclick="uncertain(this)"> I can't identify any of the sound sources in this recording
+            <input id="uncertain" type="checkbox" onclick="toggleSteps()" style="width: 24px; height: 24px"> I can't identify any of the sound sources in this recording
         </div>
     </div>
     <div id="step1" class="span12">
@@ -299,15 +299,10 @@ function secondsToTime(input) {
     return minutes+":"+seconds;
 }
 
-function uncertain(checkbox) {
-    if (checkbox.checked) {
-        $("#step1").hide();
-        $("#step2").hide();
-    }
-    else {
-        $("#step1").show();
-        $("#step2").show();
-    }
+//todo: fix double-click issue with IE
+function toggleSteps() {
+    $("#step1").stop().slideToggle();
+    $("#step2").stop().slideToggle();
 }
 
 function addNewTag(newtag) {
@@ -601,6 +596,9 @@ pybossa.presentTask(function(task, deferred) {
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
+                    $("#uncertain").prop("checked", false);
+                    $("#step1").show();
+                    $("#step2").show();
                     $("#inputTag").hide();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
