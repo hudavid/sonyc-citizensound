@@ -585,7 +585,8 @@ pybossa.presentTask(function(task, deferred) {
         
         $('.btn-answer').off('click').on('click', function(evt) {
             var answer = $(evt.target).attr("value");
-            if ($(".selected").length == 0) {
+            //make new case to handle uncertain submissions later
+            if ($(".selected").length == 0 && !$("#uncertain").is(":checked")) {
                 $("#tag-warning").show();
             }
             else {
