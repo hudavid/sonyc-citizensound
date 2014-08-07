@@ -86,7 +86,7 @@
         </div>
         <div>
         <span class="text-center span11" style="position: relative">
-        <button class="btn btn-lg" id="play"><i id="play-button" class="glyphicon glyphicon-play"></i> </button>
+        <button class="btn btn-lg" id="play"><i id="play-button" class="glyphicon glyphicon-pause"></i> </button>
     
         <button class="btn btn-lg" id="reverse"><i id="reverse-button" class="glyphicon glyphicon-backward"></i> </button>
         <span id="slider-current">00:00:00 / 00:00:00
@@ -101,9 +101,10 @@
     <!-- used line breaks to vertically center things, find more legit method later -->
     <div class="span12">
         <div class="span3"></div>
-        <div class="span9">
+        <div class="span9" style="font-size: large">
             <br>
-            <input id="uncertain" type="checkbox" onclick="toggleSteps()" style="width: 28px; height: 28px"> I can't identify any of the sound sources in this recording
+            <input id="uncertain" type="checkbox" onclick="toggleSteps()" style="width: 36px; height: 36px">
+            I can't identify any of the sound sources in this recording
         </div>
     </div>
     <div id="step1" class="span12">
