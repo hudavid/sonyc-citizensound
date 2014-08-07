@@ -629,6 +629,7 @@ pybossa.presentTask(function(task, deferred) {
         
         if (!$("#init-form").hasClass("in")) {
             soundclip.play();
+            $("#play-button").addClass("glyphicon-pause").removeClass("glyphicon-play");
         }
         
         $("#loading").hide();
