@@ -450,7 +450,7 @@ pybossa.presentTask(function(task, deferred) {
         $("#soundclip").on("timeupdate", function(e) {
             $(playslider).slider("option", "value", soundclip.currentTime);
             var sliderCurrent = document.getElementById("slider-current");
-            sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(soundclip.duration);
+            sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(task.info.duration);
         });
         
         $("#play").off("click").on("click", function() {
