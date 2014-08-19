@@ -124,7 +124,7 @@
                 <button id="salience" class="btn btn-primary salience" value="background">Background</button>
                 <button id="salience" class="btn btn-primary salience" value="not sure">Not Sure</button>
             </span>
-            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px">Add Tag</button> 
+            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px; opacity: 0.4">Add Tag</button> 
         </div>
     </div>
     <div id="step2" class="span12">
@@ -476,6 +476,10 @@ pybossa.presentTask(function(task, deferred) {
             $("#salience-warning").hide();
             $("[id=salience]").removeClass("active");
             $(this).addClass("active");
+            if (/\S/.test($("#custom-input").val())) {
+                console.log($("#addTag").css("opacity"));
+                $("#addTag").css("opacity", 1.0);
+            }
         });
         
         $("[id=preset-tag]").off("click").on("click", function() {
@@ -572,6 +576,7 @@ pybossa.presentTask(function(task, deferred) {
             if (/\S/.test(newtag)) {
                 $("#custom-warning").hide();
                 addNewTag(newtag);
+                $("#addTag").css("opacity", 0.4);
             }
             else {
                 $("#custom-warning").show();
