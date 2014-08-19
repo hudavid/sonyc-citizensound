@@ -304,6 +304,11 @@ function secondsToTime(input) {
 function toggleSteps() {
     $("#step1").stop().slideToggle();
     $("#step2").stop().slideToggle();
+    if ($("#uncertain").is(":checked")) {
+        $("#custom-warning").hide();
+        $("#salience-warning").hide();
+        $("#tag-warning").hide();
+    }
 }
 
 function addNewTag(newtag) {
@@ -606,6 +611,9 @@ pybossa.presentTask(function(task, deferred) {
                     $("#step1").show();
                     $("#step2").show();
                     $("#inputTag").hide();
+                    $("#custom-warning").hide();
+                    $("#salience-warning").hide();
+                    $("#tag-warning").hide();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
                     $("#addTag").hide();
