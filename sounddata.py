@@ -18,7 +18,7 @@
 import requests
 from urllib import quote
 
-serverurl = "http://serv.cusp.nyu.edu/files/sonyc/citizensound/"
+serverurl = "http://serv.cusp.nyu.edu/files/sonyc/annotation_exp/4/"
 
 def get_sounds(group):
     # url = "https://api.mongolab.com/api/1/databases/sonyc/collections/audio-data/538a43f9e4b0d7a3741b7fe2?apiKey=eFdR9h45nm-AuciNuN6d4G1Pd7NM38NS"

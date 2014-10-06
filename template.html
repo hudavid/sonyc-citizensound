@@ -119,10 +119,10 @@
             <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
             </div>
             <input id="custom-input" type="text" name="inputTag" placeholder="add tag">
-            <span id="salience-levels" class="btn-group btn-group-sm">
-                <button id="salience" class="btn btn-primary salience" value="foreground">Foreground</button>
-                <button id="salience" class="btn btn-primary salience" value="background">Background</button>
-                <button id="salience" class="btn btn-primary salience" value="not sure">Not Sure</button>
+            <span id="salience-levels">
+                <button id="salience" class="btn btn-default salience" value="foreground">Foreground</button>
+                <button id="salience" class="btn btn-default salience" value="background">Background</button>
+                <button id="salience" class="btn btn-default salience" value="not sure">Not Sure</button>
             </span>
             <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px; opacity: 0.4">Add Tag</button> 
         </div>
@@ -174,11 +174,6 @@
         <div>
             <button id="clear-cookie" class="btn" onclick="expireCookie()">Reset Timer</button>
         </div>
-        <div>Debug: Click this to play sound in IE (doesn't work for other browsers)</div>
-        <div>
-            <button id="ie-play" class="btn">Play</button>
-        </div>
-        <bgsound id="iesound">
 	</div>
     </div>
 </div>
