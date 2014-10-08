@@ -109,7 +109,7 @@
 </div>
 <div> <!-- Start Skeleton Row-->
     <div class="span12"><!-- Start of Question and Submission DIV (column) -->
-        <div id="spectrals">
+        <div id="visuals">
             <img src="http://serv.cusp.nyu.edu/files/sonyc/annotation_exp/2/blanks/blank.png">
         </div>
     <div>
@@ -437,8 +437,8 @@ pybossa.taskLoaded(function(task, deferred) {
     var img = $("<img/>");
 
     //deferred.resolve(task);
-    img.attr("src", task.info.spec_url);
-    img.attr("id", "spectral_" + task.id);
+    img.attr("src", task.info.visual_url);
+    img.attr("id", "visual_" + task.id);
     img.attr("width", "100%");
     img.load(function() {
             deferred.resolve(task);
@@ -458,11 +458,21 @@ pybossa.presentTask(function(task, deferred) {
         checkCookie();
 		$('#task-id').html(task.id);
         $("#addTag").show();
-        $("#spectrals").html(task.info.img);
-		$("#soundclip").attr("src", task.info.clip_url);
+        $("#visuals").html(task.info.img);
+		if (audio.canPlayType('audio/mpg;')) {
+			$("#soundclip").attr("type", 'audio/mpeg');
+			$("#soundclip").attr("src", task.info.clip_url+".mp3");
+			console.log("using mp3");
+		}
+		else {
+			$("#soundclip").attr("type", 'audio/wav');
+			$("#soundclip").attr("src", task.info.clip_url+".wav");
+			console.log("using wav");
+		}
+		//$("#soundclip").attr("src", task.info.clip_url);
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
-        $("[id=preset-tag]").css("margin", "2px");
+        //$("[id=preset-tag]").css("margin", "2px");
         //$("[id=salience]").css("margin", "2px");
         $("[id=salience]").removeClass("active");
         $(".selected").remove();
@@ -516,12 +526,12 @@ pybossa.presentTask(function(task, deferred) {
                 $("#addTag").css("opacity", 1.0);
             }
         });
-        
+/*        
         $("[id=preset-tag]").off("click").on("click", function() {
             var newtag = $(this).val();
             addNewTag(newtag);
         });
-        
+*/      
          var availableTags = [
             "Human: Speech",
             "Human: Laughter",

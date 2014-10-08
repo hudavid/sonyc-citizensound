@@ -29,8 +29,8 @@ def get_sounds(group):
     # print url
     data = res.json()
     for s in data['sounds']:
-        s['clip_url'] = serverurl + "audio/" + s['filename'] + ".wav"
-        s['spec_url'] = serverurl + "spectrograms/" + s['filename'] + ".png"
+        s['clip_url'] = serverurl + "audio/" + s['filename']
+        s['visual_url'] = serverurl + "spectrograms/" + s['filename'] + ".png"
         # print clip_url
         # print spec_url
     return data['sounds']
