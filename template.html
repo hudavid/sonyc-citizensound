@@ -15,7 +15,15 @@
     }
     
     .salience {
-        margin: 5px;
+        margin: 2px;
+    }
+    
+    .selected {
+        width: 100%;
+    }
+    
+    .modal {
+        padding-top: 50px;
     }
     </style>
 </head>
@@ -49,22 +57,46 @@
     </div> <!-- End Success and Error Messages for the user -->
 </div> <!-- End of Row -->
 
-<!-- Initial form -->
+<!-- Initial form
 <div class="modal" id="init-form" tabindex="-1" role="dialog" aria-labelledby="formlabel" aria-hidden="true" data-width="500" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-            <span><strong>Your personal code is: </strong></span><span><input id="form-uid" type="text" value="..." size="36" readonly></span>
-            <iframe id="gform" src="https://docs.google.com/forms/d/1Z20xQBSURgaX1qsSrXviaQuWeHBUEctCaDgaeSkeshw/viewform?embedded=true" width="600" height="640" frameborder="0" marginheight="0" marginwidth="0" onload="formLoaded()">Loading...</iframe>
+            <p>Please enter your ID below to continue, or create a new one if you don't have one</p>
             <div>
-                <button class="btn btn-lg" id="continue" onclick="closeForm()" style="display: none">Continue</button>
+                <button class="btn btn-lg" onclick="location.href='http://serv.cusp.nyu.edu/projects/soundtagging'">New Participant</button>
             </div>
             <div>
-                <button class="btn btn-lg" id="continue-debug" onclick="closeForm()">Debug: Skip Form</button>
+                <input type = "text" name = "ID" placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" size="36">
+            </div>
+            <div>
+                <button class="btn btn-lg" onclick="continue()">Continue</button>
             </div>
         </div>
     </div>
 </div>
+-->
 
+<div class="modal" id="init-form">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <div class="modal-body">
+      <h4>Please enter your ID below to continue, or click on the New Participant button if you do not have an ID</h4>
+            <div>
+                <button class="btn" onclick="location.href='http://serv.cusp.nyu.edu/projects/soundtagging'">New Participant</button>
+            </div>
+            <br>
+            <div>
+                <input id="inputUID" type = "text" name = "ID" placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" size="36">
+            </div>
+            <div>
+                <button class="btn" onclick="formSubmitted()">Continue</button>
+            </div>
+        </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
 <!--
     Task DOM for loading images
 -->
@@ -124,7 +156,7 @@
                 <button id="salience" class="btn btn-default salience" value="background">Background</button>
                 <button id="salience" class="btn btn-default salience" value="not sure">Not Sure</button>
             </span>
-            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px; opacity: 0.4">Add Tag</button> 
+            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px; opacity: 0.5">Add Tag</button> 
         </div>
     </div>
     <div id="step2" class="span12">
@@ -132,13 +164,13 @@
             <h3>Step 2</h3>
             <p><strong>Review tags (click to remove)</strong></p>
         </div>
-        <div class="span3 btn-group-vertical btn-group-sm" id="selected-fg">
+        <div class="span3 btn-group-sm" id="selected-fg">
             <p class="text-center"><strong>Foreground</strong></p>
         </div>
-        <div class="span3 btn-group-vertical btn-group-sm" id="selected-bg">
+        <div class="span3 btn-group-sm" id="selected-bg">
             <p class="text-center"><strong>Background</strong></p>
         </div>
-        <div class="span3 btn-group-vertical btn-group-sm" id="selected-uk">
+        <div class="span3 btn-group-sm" id="selected-uk">
             <p class="text-center"><strong>Not Sure</strong></p>
         </div>
     </div>
@@ -246,6 +278,7 @@ function getCookie(cname) {
     return "";
 }
 
+/*
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
@@ -255,26 +288,35 @@ function checkCookie() {
        showIntroForm(uniqueID);
     }
 }
+*/
+
+function checkCookie() {
+    var uniqueID = getCookie("uid");
+    if (!uniqueID) {
+       showIntroForm();
+    }
+}
 
 //remove later: for debugging purposes only, immediately expires the cookie
 function expireCookie() {
     setCookie("uid", 1, -1);
 }
-
+/*
 function formLoaded() {
     var form = document.getElementById("gform");
     $(form).attr("onload", "formSubmitted()");
 }
-
-function showIntroForm(UID) {
-    document.getElementById("form-uid").innerHTML = UID;
-    document.getElementById("form-uid").value = UID;
+*/
+function showIntroForm() {
     $("#init-form").modal("show");
 }
 
 //called when intro survey is submitted
 function formSubmitted() {
-    $("#continue").show();
+    uniqueID = $("#inputUID").val();
+    setCookie("uid", uniqueID, 1800);
+    closeForm();
+    console.log(uniqueID);
 }
 
 function closeForm() {
@@ -571,7 +613,7 @@ pybossa.presentTask(function(task, deferred) {
             if (/\S/.test(newtag)) {
                 $("#custom-warning").hide();
                 addNewTag(newtag);
-                $("#addTag").css("opacity", 0.4);
+                $("#addTag").css("opacity", 0.5);
             }
             else {
                 $("#custom-warning").show();
