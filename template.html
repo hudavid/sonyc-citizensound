@@ -89,7 +89,9 @@
             <div>
                 <input id="inputUID" type = "text" name = "ID" placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" size="36">
             </div>
-            <div>
+			<div id="id-warning" style="color: red; display: none">The ID is not in the right format.
+            </div> 
+           <div>
                 <button class="btn" onclick="formSubmitted()">Continue</button>
             </div>
         </div>
@@ -250,14 +252,10 @@
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 -->
 <script>
-
-//GUID generator code adapted from http://guid.us/
-function S4() {
-    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-}
- 
-function GUID() {
-    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+//check if input is in the form of a UID
+function checkID(id) {
+	var regex = /[a-z0-9]{8,8}-[a-z0-9]{4,4}-4[a-z0-9]{3,3}-[a-z0-9]{4,4}-[a-z0-9]{12,12}/;
+	return regex.test(id);
 }
 
 //time is handled in milliseconds
@@ -314,9 +312,14 @@ function showIntroForm() {
 //called when intro survey is submitted
 function formSubmitted() {
     uniqueID = $("#inputUID").val();
-    setCookie("uid", uniqueID, 1800);
-    closeForm();
-    console.log(uniqueID);
+	if (checkID(uniqueID)) {
+	    setCookie("uid", uniqueID, 1800);
+	    closeForm();
+	    console.log(uniqueID);
+	}
+	else {
+		$("#id-warning").show();
+	}
 }
 
 function closeForm() {
@@ -466,11 +469,6 @@ pybossa.presentTask(function(task, deferred) {
         
         var soundclip = document.getElementById("soundclip");
         var playslider = document.getElementById("playslider");
-        
-        //test for IE playback
-        $("#ie-play").off("click").on("click", function() {
-            document.all.iesound.src = task.info.clip_url;
-        });
         
         //function to flip play/pause icon to play
         var switchToPlay = function(event) {
