@@ -94,6 +94,7 @@
            <div>
                 <button class="btn" onclick="formSubmitted()">Continue</button>
             </div>
+				<button class="btn" onclick="closeForm()">debug: skip</button>
         </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -114,7 +115,9 @@
         </div>
     <div>
         <audio id="soundclip" preload="auto">
-        <p>Your browser doesn't support audio elements</p>
+        	<source src ="" id = "mp3source" type="audio/mpeg" />
+			<source src ="" id = "wavsource" type="audio/wav" />
+			Your browser doesn't support audio elements
         </audio>
         <div id="playslider" style="margin-top:5px">
         </div>
@@ -459,16 +462,8 @@ pybossa.presentTask(function(task, deferred) {
 		$('#task-id').html(task.id);
         $("#addTag").show();
         $("#visuals").html(task.info.img);
-		if (audio.canPlayType('audio/mpg;')) {
-			$("#soundclip").attr("type", 'audio/mpeg');
-			$("#soundclip").attr("src", task.info.clip_url+".mp3");
-			console.log("using mp3");
-		}
-		else {
-			$("#soundclip").attr("type", 'audio/wav');
-			$("#soundclip").attr("src", task.info.clip_url+".wav");
-			console.log("using wav");
-		}
+		$("#mp3source").attr("src", task.info.mp3_url);
+		$("#wavsource").attr("src", task.info.wav_url);
 		//$("#soundclip").attr("src", task.info.clip_url);
         //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
