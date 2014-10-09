@@ -81,11 +81,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <div class="modal-body">
-      <h4>Please enter your ID below to continue, or click on the New Participant button if you do not have an ID</h4>
-            <div>
-                <button class="btn" onclick="location.href='http://serv.cusp.nyu.edu/projects/soundtagging'">New Participant</button>
-            </div>
-            <br>
+      <h4>Please enter your ID below to continue</h4>
             <div>
                 <input id="inputUID" type = "text" name = "ID" placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" size="36">
             </div>
@@ -648,7 +644,7 @@ pybossa.presentTask(function(task, deferred) {
                 tag.uid = getCookie("uid");
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
-                tag.notSure = $("#uncertain").is(":checked");
+                tag.cannotID = $("#uncertain").is(":checked");
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
