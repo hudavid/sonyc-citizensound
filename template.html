@@ -313,6 +313,7 @@ function formSubmitted() {
 function closeForm() {
     $("#init-form").modal("hide");
     document.getElementById("soundclip").play();
+	window.timer = getCurrentTime();
 }
 
 //from seconds to mm:ss.ms format
@@ -451,7 +452,6 @@ pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
         checkCookie();
-		var timer = getCurrentTime();
 		$('#task-id').html(task.id);
         $("#addTag").show();
         $("#visuals").html(task.info.img);
@@ -642,7 +642,8 @@ pybossa.presentTask(function(task, deferred) {
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
                 tag.cannotID = $("#uncertain").is(":checked");
-				tag.timeElapsed = getCurrentTime() - timer;
+				tag.timeElapsed = getCurrentTime() - window.timer;
+				console.log(getCurrentTime() - window.timer);
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
@@ -675,6 +676,7 @@ pybossa.presentTask(function(task, deferred) {
         if (!$("#init-form").hasClass("in")) {
             soundclip.play();
             $("#play-button").addClass("glyphicon-pause").removeClass("glyphicon-play");
+			window.timer = getCurrentTime();
         }
         
         $("#loading").hide();
