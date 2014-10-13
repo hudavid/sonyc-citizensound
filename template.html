@@ -333,10 +333,7 @@ function toggleSteps() {
     $("#step1").stop().slideToggle();
     $("#step2").stop().slideToggle();
     if ($("#uncertain").is(":checked")) {
-        $("#custom-warning").hide();
-        $("#salience-warning").hide();
-		$("#length-warning").hide();
-        $("#tag-warning").hide();
+		hideWarnings();
     }
 }
 
@@ -349,10 +346,7 @@ function addNewTag(newtag) {
 		$("#length-warning").show();
 	}
     else {
-        $("#salience-warning").hide();
-        $("#tag-warning").hide();
-        $("#custom-warning").hide();
-		$("#length-warning").hide();
+        hideWarnings();
         $("#custom-input").val("");
         $("[id=salience]").removeClass("active");
         var elementToAdd = $("<button>", {
@@ -412,6 +406,14 @@ function getTags() {
         }
     }
     return tags;
+}
+
+//hide warning messages
+function hideWarnings () {
+	$("#salience-warning").hide();
+	$("#tag-warning").hide();
+	$("#custom-warning").hide();
+	$("#length-warning").hide();
 }
 
 function loadUserProgress() {
@@ -648,10 +650,7 @@ pybossa.presentTask(function(task, deferred) {
                     $("#step1").show();
                     $("#step2").show();
                     $("#inputTag").hide();
-                    $("#custom-warning").hide();
-                    $("#salience-warning").hide();
-					$("#length-warning").hide();
-                    $("#tag-warning").hide();
+                    hideWarnings();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
                     $("#addTag").hide();
