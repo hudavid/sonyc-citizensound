@@ -132,6 +132,8 @@
             </div>
             <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
             </div>
+			<div id="length-warning" style="color: red; display: none">Please enter a shorter tag
+			</div>
             <input id="custom-input" type="text" name="inputTag" placeholder="add tag">
             <span id="salience-levels">
                 <button id="salience" class="btn btn-default salience" value="foreground">Foreground</button>
@@ -238,6 +240,12 @@ function checkID(id) {
 	return regex.test(id);
 }
 
+//used to keep track of time spent per task
+function getCurrentTime() {
+	var d = new Date();
+	return d.getTime();
+}
+
 //time is handled in milliseconds
 function setCookie(cname,cvalue,expireTime) {
     var date = new Date();
@@ -327,6 +335,7 @@ function toggleSteps() {
     if ($("#uncertain").is(":checked")) {
         $("#custom-warning").hide();
         $("#salience-warning").hide();
+		$("#length-warning").hide();
         $("#tag-warning").hide();
     }
 }
@@ -336,10 +345,14 @@ function addNewTag(newtag) {
     if (typeof salience == 'undefined') {
         $("#salience-warning").show();
     }
+	else if (newtag.length > 40) {
+		$("#length-warning").show();
+	}
     else {
         $("#salience-warning").hide();
         $("#tag-warning").hide();
         $("#custom-warning").hide();
+		$("#length-warning").hide();
         $("#custom-input").val("");
         $("[id=salience]").removeClass("active");
         var elementToAdd = $("<button>", {
@@ -436,6 +449,7 @@ pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
         checkCookie();
+		var timer = getCurrentTime();
 		$('#task-id').html(task.id);
         $("#addTag").show();
         $("#visuals").html(task.info.img);
@@ -626,6 +640,7 @@ pybossa.presentTask(function(task, deferred) {
                 tag.comments = $("#comment-box").val();
                 tag.app_id = "initial_test"; //app_id should change according to version
                 tag.cannotID = $("#uncertain").is(":checked");
+				tag.timeElapsed = getCurrentTime() - timer;
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
@@ -635,6 +650,7 @@ pybossa.presentTask(function(task, deferred) {
                     $("#inputTag").hide();
                     $("#custom-warning").hide();
                     $("#salience-warning").hide();
+					$("#length-warning").hide();
                     $("#tag-warning").hide();
                     $("#custom-input").val("");
                     //$("#inputTag").addClass("disabled");
