@@ -70,9 +70,6 @@
             </div> 
            <div>
                 <button class="btn" onclick="formSubmitted()">Continue</button>
-            </div>
-				<button class="btn" onclick="closeForm()">debug: skip</button>
-        </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -186,53 +183,10 @@
         <div class="progress progress-striped">
             <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
         </div>
-        <div>Debug: Click this to make the cookie expire</div>
-        <div>
-            <button id="clear-cookie" class="btn" onclick="expireCookie()">Reset Timer</button>
-        </div>
 	</div>
     </div>
 </div>
-        <!-- 
-            This application uses Disqus to allow users to provide some feedback.
-            The next section includes a button that when a user clicks on it will
-            load the comments, if any, for the given task
-			
-        <div id="disqus_show_btn" style="margin-top:5px;">
-            <button class="btn btn-primary btn-large btn-disqus" onclick="loadDisqus()"><i class="icon-comments"></i> Show comments</button>
-            <button class="btn btn-large btn-disqus" onclick="loadDisqus()" style="display:none"><i class="icon-comments"></i> Hide comments</button>
-        </div>
-		-->
-		<!-- End of Disqus Button section -->
-        <!-- Disqus thread for the given task -->
-		<!--
-        <div id="disqus_thread" style="margin-top:5px;display:none"></div>
-		-->
-<!-- End of Skeleton Row -->
 
-<!-- entire chunk is for comments
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    function loadDisqus() {
-    $("#disqus_thread").toggle();
-    $(".btn-disqus").toggle();
-    var disqus_shortname = 'pybossa'; // required: replace example with your forum shortname
-    //var disqus_identifier = taskId;
-    var disqus_developer = 1;
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-    }
-
-</script>
-
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
--->
 <script>
 //check if input is in the form of a UID
 function checkID(id) {
@@ -264,18 +218,6 @@ function getCookie(cname) {
     return "";
 }
 
-/*
-function checkCookie() {
-    var uniqueID = getCookie("uid");
-    if (!uniqueID) {
-       //cookie lasts for 30 minutes for now, change time to something realistic later
-       uniqueID = GUID();
-       setCookie("uid", uniqueID, 1800);
-       showIntroForm(uniqueID);
-    }
-}
-*/
-
 function checkCookie() {
     var uniqueID = getCookie("uid");
     if (!uniqueID) {
@@ -283,16 +225,6 @@ function checkCookie() {
     }
 }
 
-//remove later: for debugging purposes only, immediately expires the cookie
-function expireCookie() {
-    setCookie("uid", 1, -1);
-}
-/*
-function formLoaded() {
-    var form = document.getElementById("gform");
-    $(form).attr("onload", "formSubmitted()");
-}
-*/
 function showIntroForm() {
     $("#init-form").modal("show");
 }
@@ -343,9 +275,6 @@ function addNewTag(newtag) {
     if (typeof salience == 'undefined') {
         $("#salience-warning").show();
     }
-	else if (newtag.length > 40) {
-		$("#length-warning").show();
-	}
     else {
         hideWarnings();
         $("#custom-input").val("");
@@ -354,7 +283,6 @@ function addNewTag(newtag) {
             type: "button",
             value: newtag,
             class: "btn btn-default selected",
-            //id: "selected"
         });
         elementToAdd.append("<span>"+newtag+"</span><span style='display:none'>Delete</span>");
         elementToAdd.on('click', function(evt) {
@@ -457,11 +385,7 @@ pybossa.presentTask(function(task, deferred) {
         $("#visuals").html(task.info.img);
 		$("#mp3source").attr("src", task.info.mp3_url);
 		$("#wavsource").attr("src", task.info.wav_url);
-		//$("#soundclip").attr("src", task.info.clip_url);
-        //$("#soundclip").attr("ontimeupdate", "updateSound()");
         $("#soundclip").load();
-        //$("[id=preset-tag]").css("margin", "2px");
-        //$("[id=salience]").css("margin", "2px");
         $("[id=salience]").removeClass("active");
         $(".selected").remove();
         
@@ -514,12 +438,7 @@ pybossa.presentTask(function(task, deferred) {
                 $("#addTag").css("opacity", 1.0);
             }
         });
-/*        
-        $("[id=preset-tag]").off("click").on("click", function() {
-            var newtag = $(this).val();
-            addNewTag(newtag);
-        });
-*/      
+
          var availableTags = [
             "Human: Speech",
             "Human: Laughter",
@@ -659,19 +578,7 @@ pybossa.presentTask(function(task, deferred) {
                     deferred.resolve();
                 });
                 $("#loading").fadeIn(200);
-				/*
-                if ($("#disqus_thread").is(":visible")) {
-                    $('#disqus_thread').toggle();
-                    $('.btn-disqus').toggle();
-                }
-				*/
-            }
-            /*
-            else {
-                $("#error").show();
-            }
-            */
-        });
+       });
         
         if (!$("#init-form").hasClass("in")) {
             soundclip.play();
