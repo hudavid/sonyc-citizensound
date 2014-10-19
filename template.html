@@ -234,7 +234,7 @@ function showIntroForm() {
 function formSubmitted() {
     uniqueID = $("#inputUID").val();
 	if (checkID(uniqueID)) {
-	    setCookie("uid", uniqueID, 1800);
+	    setCookie("uid", uniqueID, 259200);
 	    closeForm();
 	}
 	else {
