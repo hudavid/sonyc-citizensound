@@ -70,6 +70,7 @@
             </div> 
            <div>
                 <button class="btn" onclick="formSubmitted()">Continue</button>
+		</div></div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -235,7 +236,6 @@ function formSubmitted() {
 	if (checkID(uniqueID)) {
 	    setCookie("uid", uniqueID, 1800);
 	    closeForm();
-	    console.log(uniqueID);
 	}
 	else {
 		$("#id-warning").show();
@@ -434,7 +434,6 @@ pybossa.presentTask(function(task, deferred) {
             $("[id=salience]").removeClass("active");
             $(this).addClass("active");
             if (/\S/.test($("#custom-input").val())) {
-                console.log($("#addTag").css("opacity"));
                 $("#addTag").css("opacity", 1.0);
             }
         });
@@ -562,7 +561,6 @@ pybossa.presentTask(function(task, deferred) {
                 tag.app_id = "initial_test"; //app_id should change according to version
                 tag.cannotID = $("#uncertain").is(":checked");
 				tag.timeElapsed = getCurrentTime() - window.timer;
-				console.log(getCurrentTime() - window.timer);
                 pybossa.saveTask(task.id, tag).done(function() {
                     //find way to make it scroll up smoothly
                     $(document).scrollTop(0);
@@ -578,7 +576,7 @@ pybossa.presentTask(function(task, deferred) {
                     deferred.resolve();
                 });
                 $("#loading").fadeIn(200);
-       });
+       }});
         
         if (!$("#init-form").hasClass("in")) {
             soundclip.play();
