@@ -105,7 +105,7 @@
         </span>
         </span>
         <span class="span1">
-            <a href="/app/sonycv1/tutorial"><button class="btn btn-inverse pull-right">Show Tutorial</button></a>
+            <a href="/app/sonycv8/tutorial"><button class="btn btn-inverse pull-right">Show Tutorial</button></a>
         </span>
         </div>
     </div>
@@ -346,7 +346,7 @@ function hideWarnings () {
 }
 
 function loadUserProgress() {
-    pybossa.userProgress('sonycv1').done(function(data){
+    pybossa.userProgress('sonycv8').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
         $("#progress").css("width", pct.toString() +"%");
         $("#progress").attr("title", pct.toString() + "% completed!");
@@ -593,5 +593,5 @@ pybossa.presentTask(function(task, deferred) {
     }
 });
 
-pybossa.run('sonycv1');
+pybossa.run('sonycv8');
 </script>
