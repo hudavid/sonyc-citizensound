@@ -1,0 +1,597 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.8.24/jquery-ui.min.js"></script>
+
+<!-- change css of entire page -->
+<head>
+    <style>
+    .h1 {
+        margin-top: 0px;
+    }
+    
+    .ui-autocomplete {
+        max-height: 250px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    .salience {
+        margin: 2px;
+    }
+    
+    .selected {
+        width: 100%;
+    }
+    
+    .modal {
+        padding-top: 50px;
+    }
+    </style>
+</head>
+
+<div class="row">
+    <!-- Success and Error Messages for the user --> 
+    <div class="span6 offset2">
+        <div id="success" class="alert alert-success" style="display:none;">
+            <a class="close">×</a>
+            <strong>Well done!</strong> Your answer has been saved
+        </div>
+        <div id="loading" class="alert alert-info" style="display:none;">
+            <a class="close">×</a>
+            Loading next task...
+        </div>
+        <div id="taskcompleted" class="alert alert-info" style="display:none;">
+            <strong>The task has been completed!</strong> Thanks a lot!
+        </div>
+        <div id="finish" class="alert alert-success" style="display:none;">
+            <strong>Congratulations!</strong> You have participated in all available tasks!
+            <br/>
+            <div class="alert-actions">
+                <a class="btn small" href="/">Go back</a>
+                <a class="btn small" href="/app">or, Check other applications</a>
+            </div>
+        </div>
+        <div id="error" class="alert alert-error" style="display:none;">
+            <a class="close">×</a>
+            <strong>Error!</strong> Something went wrong, please contact the site administrators
+        </div>
+    </div> <!-- End Success and Error Messages for the user -->
+</div> <!-- End of Row -->
+
+<div class="modal" id="init-form" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      <div class="modal-body">
+      <h4>Please enter your ID below to continue</h4>
+            <div>
+                <input id="inputUID" type = "text" name = "ID" placeholder="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee" size="36">
+            </div>
+			<div id="id-warning" style="color: red; display: none">The ID is not in the right format.
+            </div> 
+           <div>
+                <button class="btn" onclick="formSubmitted()">Continue</button>
+		</div></div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</div>
+<!--
+    Task DOM for loading images
+-->
+<div class="row skeleton span12"> <!-- Start Skeleton Row-->
+    <div class="span12"><!-- Start of Question and Submission DIV (column) -->
+        <h1 id="question">Label this sound clip</h1> <!-- The question will be loaded here -->
+    </div>
+</div>
+<div> <!-- Start Skeleton Row-->
+    <div class="span12"><!-- Start of Question and Submission DIV (column) -->
+        <div id="visuals">
+            <img src="http://serv.cusp.nyu.edu/files/sonyc/annotation_exp/2/blanks/blank.png">
+        </div>
+    <div>
+        <audio id="soundclip" preload="auto">
+        	<source src ="" id = "mp3source" type="audio/mpeg" />
+			<source src ="" id = "wavsource" type="audio/wav" />
+			Your browser doesn't support audio elements
+        </audio>
+        <div id="playslider" style="margin-top:5px">
+        </div>
+        <div>
+        <span class="text-center span11" style="position: relative">
+        <button class="btn btn-lg" id="play"><i id="play-button" class="glyphicon glyphicon-pause"></i> </button>
+    
+        <button class="btn btn-lg" id="reverse"><i id="reverse-button" class="glyphicon glyphicon-backward"></i> </button>
+        <span id="slider-current">00:00:00 / 00:00:00
+        </span>
+        </span>
+        <span class="span1">
+            <a href="/app/sonycv1/tutorial"><button class="btn btn-inverse pull-right">Show Tutorial</button></a>
+        </span>
+        </div>
+    </div>
+    </div><!-- End of Question and Submission DIV (column) -->
+    <!-- used line breaks to vertically center things, find more legit method later -->
+    <div class="span12">
+        <div class="span3"></div>
+        <div class="span9" style="font-size: large">
+            <br>
+            <input id="uncertain" type="checkbox" onclick="toggleSteps()" style="width: 36px; height: 36px">
+            <span style="vertical-align: 50%">I can't identify any of the sound sources in this recording</span>
+        </div>
+    </div>
+    <div id="step1" class="span12">
+        <div class="span3 text-center">
+        <h3>Step 1</h3>
+        <p><strong>Add tags (you can add as many as you need)</strong></p>
+        </div>
+        <div class="span9">
+            <br>
+            <div id="custom-warning" style="color: red; display: none">Please enter a tag name in the box below
+            </div>
+            <div id="salience-warning" style="color: red; display: none">Please select a salience level before adding a tag
+            </div>
+			<div id="length-warning" style="color: red; display: none">Please enter a shorter tag
+			</div>
+            <input id="custom-input" type="text" name="inputTag" placeholder="add tag">
+            <span id="salience-levels">
+                <button id="salience" class="btn btn-default salience" value="foreground">Foreground</button>
+                <button id="salience" class="btn btn-default salience" value="background">Background</button>
+                <button id="salience" class="btn btn-default salience" value="not sure">Not Sure</button>
+            </span>
+            <button class="btn btn-inverse" value='addTag' id="addTag" type="button" style="margin: 5px 2px; opacity: 0.5">Add Tag</button> 
+        </div>
+    </div>
+    <div id="step2" class="span12">
+        <div class="span3 text-center">
+            <h3>Step 2</h3>
+            <p><strong>Review tags (click to remove)</strong></p>
+        </div>
+        <div class="span3 btn-group-sm" id="selected-fg">
+            <p class="text-center"><strong>Foreground</strong></p>
+        </div>
+        <div class="span3 btn-group-sm" id="selected-bg">
+            <p class="text-center"><strong>Background</strong></p>
+        </div>
+        <div class="span3 btn-group-sm" id="selected-uk">
+            <p class="text-center"><strong>Not Sure</strong></p>
+        </div>
+    </div>
+    <div id="step3" class="span12">
+        <div class="span3 text-center">
+            <h3>Step 3</h3>
+            <p><strong>Repeat steps 1-2 until you've tagged all sounds in the recording, and then submit</strong></p>
+        </div>
+    <div class="span9">
+        <br>
+        <div id="tag-warning" style="color: red; display: none">Please add at least one tag. Did you click the "Add Tag" button after providing the tag name and salience level?
+        </div>
+        <button class="btn btn-inverse btn-answer btn-answer" id="submit" type="button"><i class="icon icon-white icon-plus"></i> Submit</button>
+    </div>
+    </div>
+    <div class="span12" style="border: 1px dashed gray; margin: 10px"></div>
+    <div class="span6">
+        <strong>Comments/feedback here</strong>
+        <div><textarea id="comment-box" class="form-control" placeholder="Feedback here" style="resize: vertical" rows="5"></textarea></div>
+    </div>
+    <div class="span6">
+    <button class="btn btn-inverse btn-sm" id="toggle-info" type="button">Show/Hide Details</button>
+    <div id="extra-info" style="display:none">
+		 <p>The current task ID is: <span id="task-id" class="label label-info">#</span></p>
+        <p>You have completed: <span id="done" class="label label-info"></span> out of
+        <!-- Progress bar for the user -->
+        <span id="total" class="label label-warning"></span> tasks</p>
+
+        <div class="progress progress-striped">
+            <div id="progress" rel="tooltip" title="#" class="progress-bar" style="width: 0%;"></div>
+        </div>
+	</div>
+    </div>
+</div>
+
+<script>
+//check if input is in the form of a UID
+function checkID(id) {
+	var regex = /[a-z0-9]{8,8}-[a-z0-9]{4,4}-4[a-z0-9]{3,3}-[a-z0-9]{4,4}-[a-z0-9]{12,12}/;
+	return regex.test(id);
+}
+
+//used to keep track of time spent per task
+function getCurrentTime() {
+	var d = new Date();
+	return d.getTime();
+}
+
+//time is handled in milliseconds
+function setCookie(cname,cvalue,expireTime) {
+    var date = new Date();
+    date.setTime(Date.now() + (expireTime*1000));
+    var expires = "expires=" + date.toGMTString();
+    document.cookie = cname+"="+cvalue+"; "+expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var cArray = document.cookie.split(';');
+    for(var i = 0; i < cArray.length; i++) {
+        var current = cArray[i].trim();
+        if (current.indexOf(name) == 0) return current.substring(name.length, current.length);
+    }
+    return "";
+}
+
+function checkCookie() {
+    var uniqueID = getCookie("uid");
+    if (!uniqueID) {
+       showIntroForm();
+    }
+}
+
+function showIntroForm() {
+    $("#init-form").modal("show");
+}
+
+//called when intro survey is submitted
+function formSubmitted() {
+    uniqueID = $("#inputUID").val();
+	if (checkID(uniqueID)) {
+	    setCookie("uid", uniqueID, 259200);
+	    closeForm();
+	}
+	else {
+		$("#id-warning").show();
+	}
+}
+
+function closeForm() {
+    $("#init-form").modal("hide");
+    document.getElementById("soundclip").play();
+	window.timer = getCurrentTime();
+}
+
+//from seconds to mm:ss.ms format
+function secondsToTime(input) {
+    var minutes = Math.floor(input / 60);
+    if (minutes < 10) {
+        minutes = "0"+minutes;
+    }
+    var seconds = (input - (minutes * 60)).toFixed(2);
+    if (seconds < 10) {
+        seconds = "0"+seconds;
+    }
+    return minutes+":"+seconds;
+}
+
+//todo: fix double-click issue with IE
+function toggleSteps() {
+    $("#step1").stop().slideToggle();
+    $("#step2").stop().slideToggle();
+    if ($("#uncertain").is(":checked")) {
+		hideWarnings();
+    }
+}
+
+function addNewTag(newtag) {
+    var salience = $("#salience-levels .active").val();
+    if (typeof salience == 'undefined') {
+        $("#salience-warning").show();
+    }
+    else {
+        hideWarnings();
+        $("#custom-input").val("");
+        $("[id=salience]").removeClass("active");
+        var elementToAdd = $("<button>", {
+            type: "button",
+            value: newtag,
+            class: "btn btn-default selected",
+        });
+        elementToAdd.append("<span>"+newtag+"</span><span style='display:none'>Delete</span>");
+        elementToAdd.on('click', function(evt) {
+            $(this).remove();
+        });
+        elementToAdd.hover(function() {
+            $(this).children().toggle();
+            $(this).toggleClass('btn-default btn-danger');
+        });
+        
+        elementToAdd.css("margin", "5px");
+        
+        switch(salience) {
+            case "foreground":
+                elementToAdd.attr('id', 'tag-fg');
+                $("#selected-fg").append(elementToAdd);
+                break;
+            case "background":
+                elementToAdd.attr('id', 'tag-bg');
+                $("#selected-bg").append(elementToAdd);
+                break;
+            default:
+                elementToAdd.attr('id', 'tag-un');
+                $("#selected-uk").append(elementToAdd);
+        }
+    }
+}
+
+function getTags() {
+    var tags = {};
+    tags.foreground = new Array();
+    tags.background = new Array();
+    tags.unsure = new Array();
+    
+    if (!$("#uncertain").is(":checked")) {
+        var fg = $('[id=tag-fg]');
+        var bg = $('[id=tag-bg]');
+        var un = $('[id=tag-un]');
+        
+        for (i = 0; i < fg.length; i++) {
+            tags.foreground.push(fg[i].value);
+        }
+        
+        for (i = 0; i < bg.length; i++) {
+            tags.background.push(bg[i].value);
+        }
+        
+        for (i = 0; i < un.length; i++) {
+            tags.unsure.push(un[i].value);
+        }
+    }
+    return tags;
+}
+
+//hide warning messages
+function hideWarnings () {
+	$("#salience-warning").hide();
+	$("#tag-warning").hide();
+	$("#custom-warning").hide();
+	$("#length-warning").hide();
+}
+
+function loadUserProgress() {
+    pybossa.userProgress('sonycv1').done(function(data){
+        var pct = Math.round((data.done*100)/data.total);
+        $("#progress").css("width", pct.toString() +"%");
+        $("#progress").attr("title", pct.toString() + "% completed!");
+        $("#progress").tooltip({'placement': 'left'}); 
+        $("#total").text(data.total);
+        $("#done").text(data.done);
+    });
+}
+
+pybossa.taskLoaded(function(task, deferred) {
+    if ( !$.isEmptyObject(task) ) {
+    var img = $("<img/>");
+
+    //deferred.resolve(task);
+    img.attr("src", task.info.visual_url);
+    img.attr("id", "visual_" + task.id);
+    img.attr("width", "100%");
+    img.load(function() {
+            deferred.resolve(task);
+    });
+    task.info.img = img;
+    
+    //task.answer = [];
+}
+    else {
+        deferred.resolve(task);
+    }
+});
+
+pybossa.presentTask(function(task, deferred) {
+    if ( !$.isEmptyObject(task) ) {
+        loadUserProgress();
+        checkCookie();
+		$('#task-id').html(task.id);
+        $("#addTag").show();
+        $("#visuals").html(task.info.img);
+		$("#mp3source").attr("src", task.info.mp3_url);
+		$("#wavsource").attr("src", task.info.wav_url);
+        $("#soundclip").load();
+        $("[id=salience]").removeClass("active");
+        $(".selected").remove();
+        
+        var soundclip = document.getElementById("soundclip");
+        var playslider = document.getElementById("playslider");
+        
+        //function to flip play/pause icon to play
+        var switchToPlay = function(event) {
+            $("#play-button").addClass("glyphicon-play").removeClass("glyphicon-pause");
+        };
+        
+        soundclip.addEventListener("ended", switchToPlay);
+        
+        $("#playslider").slider({
+            range: false,
+            min: 0,
+            max: (task.info.duration).toFixed(2),
+            step: 0.01,
+            slide: function(event, ui) {
+                soundclip.currentTime = $(this).slider("value");
+            }
+        });
+        
+        $("#soundclip").on("timeupdate", function(e) {
+            $(playslider).slider("option", "value", soundclip.currentTime);
+            var sliderCurrent = document.getElementById("slider-current");
+            sliderCurrent.innerHTML =  secondsToTime(soundclip.currentTime) + ' / ' + secondsToTime(task.info.duration);
+        });
+        
+        $("#play").off("click").on("click", function() {
+            if (soundclip.paused) {
+                soundclip.play();
+            }
+            else {
+                soundclip.pause();
+            }
+            $("#play-button").toggleClass('glyphicon-play glyphicon-pause');
+        });
+        
+        $("#reverse").off("click").on("click", function() {
+            soundclip.currentTime = 0;
+        });
+        
+        $("[id=salience]").off("click").on("click", function() {
+            $("#salience-warning").hide();
+            $("[id=salience]").removeClass("active");
+            $(this).addClass("active");
+            if (/\S/.test($("#custom-input").val())) {
+                $("#addTag").css("opacity", 1.0);
+            }
+        });
+
+         var availableTags = [
+            "Human: Speech",
+            "Human: Laughter",
+            "Human: Shouting",
+            "Human: Crying",
+            "Human: Coughing",
+            "Human: Sneezing",
+            "Human: Singing",
+            "Human: Infant",
+            "Human: Children",
+            "Human: Footsteps",
+            "Nature: Wind",
+            "Nature: Water",
+            "Nature: Thunder",
+            "Animals: Dog bark",
+            "Animals: Dog howl",
+            "Animals: Bird tweet",
+            "Nature: Leaves rustling",
+            "Construction: Jackhammer",
+            "Construction: Hammering",
+            "Construction: Drilling",
+            "Construction: Sawing",
+            "Construction: Explosion",
+            "Construction: Engine running",
+            "Ventilation: Air conditioner",
+            "Social/Signal: Bells",
+            "Social/Signal: Clock chimes",
+            "Social/Signal: Alarm",
+            "Social/Signal: Fireworks",
+            "Social/Signal: Gun shot",
+            "Bicycle: Spokes",
+            "Bicycle: Bell",
+            "Marine: Boat",
+            "Train: Wheels on tracks",
+            "Train: Rumble",
+            "Train: Breaks screeching",
+            "Train: Recorded announcements",
+            "Car: Siren",
+            "Car: Engine idling",
+            "Car: Engine passing",
+            "Car: Engine accelerating",
+            "Car: Horn",
+            "Car: Brakes screeching",
+            "Car: Wheels passing",
+            "Motorcycle: Siren",
+            "Motorcycle: Engine idling",
+            "Motorcycle: Engine passing",
+            "Motorcycle: Engine accelerating",
+            "Motorcycle: Horn",
+            "Motorcycle: Brakes screeching",
+            "Motorcycle: Wheels passing",
+            "Bus: Pneumatics",
+            "Bus: Backing up beeping",
+            "Bus: Engine idling",
+            "Bus: Engine passing",
+            "Bus: Engine accelerating",
+            "Bus: Horn",
+            "Bus: Brakes screeching",
+            "Bus: Wheels passing",
+            "Truck: Siren",
+            "Truck: Pneumatics",
+            "Truck: Backing up beeping",
+            "Truck: Hydraulic rams",
+            "Truck: Rattling parts",
+            "Truck: Engine idling",
+            "Truck: Engine passing",
+            "Truck: Engine accelerating",
+            "Truck: Horn",
+            "Truck: Brakes screeching",
+            "Truck: Wheels passing",
+            "Air: Helicopter",
+            "Air: Airplane",
+            "Music: Street music",
+            "Music: House party",
+            "Music: Club",
+            "Music: Car radio",
+            "Music: Ice cream truck",
+            "Music: Boombox / speakers"
+        ];
+        
+        $( "#custom-input" ).autocomplete({
+            source: availableTags
+        });
+
+        $("#addTag").off("click").on("click", function(evt) {
+            var newtag = $("#custom-input").val();
+            if (/\S/.test(newtag)) {
+                $("#custom-warning").hide();
+                addNewTag(newtag);
+                $("#addTag").css("opacity", 0.5);
+            }
+            else {
+                $("#custom-warning").show();
+            }
+        });
+
+        $('form').submit(function(e){
+            //$(this).children('input[type=submit]').attr('disabled', 'disabled');
+            // this is just for demonstration
+            e.preventDefault(); 
+        });
+
+        $( "#custom-input" ).on( "autocompleteclose", function( event, ui ) {
+                $("#addTag").removeClass("disabled");
+        });
+        
+        $("#toggle-info").off("click").on("click", function(evt) {
+            $("#extra-info").toggle();        
+        });
+        
+        $('.btn-answer').off('click').on('click', function(evt) {
+            var answer = $(evt.target).attr("value");
+            //make new case to handle uncertain submissions later
+            if ($(".selected").length == 0 && !$("#uncertain").is(":checked")) {
+                $("#tag-warning").show();
+            }
+            else {
+                var tag = getTags();
+                tag.uid = getCookie("uid");
+                tag.comments = $("#comment-box").val();
+                tag.app_id = "initial_test"; //app_id should change according to version
+                tag.cannotID = $("#uncertain").is(":checked");
+				tag.timeElapsed = getCurrentTime() - window.timer;
+                pybossa.saveTask(task.id, tag).done(function() {
+                    //find way to make it scroll up smoothly
+                    $(document).scrollTop(0);
+                    $("#uncertain").prop("checked", false);
+                    $("#step1").show();
+                    $("#step2").show();
+                    $("#inputTag").hide();
+                    hideWarnings();
+                    $("#custom-input").val("");
+                    //$("#inputTag").addClass("disabled");
+                    $("#addTag").hide();
+                    $("#comment-box").val("");
+                    deferred.resolve();
+                });
+                $("#loading").fadeIn(200);
+       }});
+        
+        if (!$("#init-form").hasClass("in")) {
+            soundclip.play();
+            $("#play-button").addClass("glyphicon-pause").removeClass("glyphicon-play");
+			window.timer = getCurrentTime();
+        }
+        
+        $("#loading").hide();
+    }
+    else {
+        $(".skeleton").hide();
+        $("#loading").hide();
+        $("#finish").fadeIn(200);
+    }
+});
+
+pybossa.run('sonycv1');
+</script>
