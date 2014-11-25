@@ -8,6 +8,4 @@ sound recordings too!
 ![specrogram](http://serv.cusp.nyu.edu/files/sonyc/citizensound/spectrograms/40722-8-0-0.png)
 
 We are training our artificial ears to identify sounds within the urban soundscapes of NYC, 
-so the more we train the better our ear will hear!
-
-Help us by telling us what you hear within the soundscape and where you hear it.
+so the more we train the better our ears will hear!
